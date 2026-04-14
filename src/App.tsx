@@ -1095,7 +1095,7 @@ export default function App() {
               duration: 0.5, 
               ease: [0.22, 1, 0.36, 1] // Custom cubic-bezier for "fluent" feel
             }}
-            className="min-h-[60vh]"
+            className="min-h-[60vh] flex flex-col items-center justify-center text-center""
           >
             {renderContent()}
           </motion.div>
