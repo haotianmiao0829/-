@@ -13,39 +13,11 @@
 
 @layer base {
   body {
+  /* 这一行保留了你原本的字体、文字颜色和选中文字时的绿色效果 */
   @apply bg-bg text-white font-sans selection:bg-accent selection:text-black;
+  
+  /* 设定绝对的纯黑背景 */
   background-color: #000000;
-  
-  /* 星空效果 */
-  background-image:
-    radial-gradient(white, rgba(255, 255, 255, 0.2) 2px, transparent 40px),
-    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 30px);
-  background-size: 550px 550px, 350px 350px;
-  background-position: 0 0, 130px 270px;
-  background-attachment: fixed; /* 让星空固定，不随鼠标滚动 */
-  
-  /* 确保网页内容在这个背景之上 */
-  position: relative;
-  z-index: 0;
-}
-
-/* 2. 右侧悬浮星球：使用 ::before 伪元素凭空创造一个图层 */
-body::before {
-  content: "";
-  position: fixed; /* 固定在屏幕上 */
-  top: 15%;        /* 靠上 */
-  right: 5%;       /* 靠右 */
-  width: 500px;    /* 星球大小 */
-  height: 500px;
-  border-radius: 50%;
-  
-  /* 你的专属科技绿发光效果 */
-  background: radial-gradient(circle, #00ff41 0%, transparent 65%);
-  filter: blur(80px); /* 柔和边缘 */
-  opacity: 0.6;       /* 亮度，如果觉得太亮可以改成 0.4 */
-  
-  z-index: -1;        /* 关键：放在你所有的文字和按钮下面！ */
-  pointer-events: none; /* 关键：让鼠标能穿透它点击下面的按钮 */
 }
 
 /* 定义光斑的运动轨迹 */
