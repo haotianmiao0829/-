@@ -304,7 +304,7 @@ const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }
 
 const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
   <div className="space-y-32">
-    <section className="min-h-[70vh] flex flex-col justify-center">
+    <section className="min-h-[70vh] flex flex-col justify-center items-center text-center">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -316,7 +316,7 @@ const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
         <p className="max-w-xl text-white/60 text-lg md:text-xl font-light leading-relaxed mb-12">
           我只是一个Agent
         </p>
-        <div className="flex flex-wrap gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           <button 
             onClick={() => setPage('projects')}
             className="px-8 py-4 bg-white text-black font-mono text-sm uppercase tracking-widest hover:bg-accent transition-colors flex items-center gap-2 cursor-pointer"
