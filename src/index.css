@@ -14,10 +14,22 @@
 @layer base {
   body {
     @apply bg-bg text-white font-sans selection:bg-accent selection:text-black;
-  /* 添加绿色光斑，中心点在中间，向外渐变为透明，透明度为 0.15 */
-  background-image: radial-gradient(circle at center, rgba(0, 255, 65, 0.15) 0%, transparent 70%);
-  /* 让光斑固定，不随网页滚动 */
-  background-attachment: fixed;
+  /* 基础设置与亮度保持不变 */
+  background-color: #000000;
+  background-image: radial-gradient(circle, rgba(0, 255, 65, 0.15) 0%, transparent 70%);
+  
+  /* 将背景图在垂直方向放大到3倍，给光斑留下“下落”的空间 */
+  background-size: 100% 300%;
+  
+  /* 核心：添加重力沉浮动画，12秒一个周期，平滑过渡，无限来回 */
+  animation: gravityFloat 12s ease-in-out infinite alternate;
+  background-attachment: fixed; 
+}
+
+/* 定义光斑的运动轨迹 */
+@keyframes gravityFloat {
+  0% { background-position: center 0%; }   /* 初始状态：光斑在网页最上方 */
+  100% { background-position: center 100%; } /* 结束状态：光斑受重力沉到最下方 */
   }
 
   /* Custom Scrollbar */
