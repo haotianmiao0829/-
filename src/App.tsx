@@ -310,7 +310,7 @@ const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-6xl md:text-8xl font-light tracking-widest mb-8 leading-none">
+        <h1 className="text-6xl md:text-8xl font-light tracking-[0.3em] mb-8 leading-none">
           浩天<span className="text-accent">淼</span>
         </h1>
         <p className="max-w-xl text-white/60 text-lg md:text-xl font-light leading-relaxed mb-12">
