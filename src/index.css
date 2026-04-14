@@ -13,17 +13,45 @@
 
 @layer base {
   body {
-    @apply bg-bg text-white font-sans selection:bg-accent selection:text-black;
-  /* 基础设置与亮度保持不变 */
+  /* 🌟 保留你原有的 Tailwind设置，千万不要删掉这行！ 🌟 */
+  @apply bg-bg text-white font-sans selection:bg-accent selection:text-black; 
+
+  /* ----- 1. 强制设定纯黑底色，确保它是宇宙般的黑色 ----- */
   background-color: #000000;
-  background-image: radial-gradient(circle, rgba(0, 255, 65, 0.15) 0%, transparent 70%);
   
-  /* 将背景图在垂直方向放大到3倍，给光斑留下“下落”的空间 */
-  background-size: 100% 300%;
-  
-  /* 核心：添加重力沉浮动画，12秒一个周期，平滑过渡，无限来回 */
-  animation: gravityFloat 12s ease-in-out infinite alternate;
-  background-attachment: fixed; 
+  /* 让背景固定，滚动网页时宇宙和光束不动，增加深邃感 */
+  background-attachment: fixed;
+
+  /* ----- 2. 核心：宇宙级多重背景叠加 (从下到上) ----- */
+  background-image:
+    /* [第一层(最顶层)]: 柔和的左上角主光束。
+       它从左上角倾斜向下扫过，使用你的科技绿，透明度 0.07，极暗，非常高级 */
+    linear-gradient(135deg, rgba(0, 255, 65, 0.07) 0%, transparent 40%),
+
+    /* [第二层]: 暗藏的右下角反光束。
+       从右下角微微向上发光，让背景不单调，透明度更低 (0.04) */
+    linear-gradient(220deg, transparent 60%, rgba(0, 255, 65, 0.04) 95%),
+
+    /* [第三层]: 大颗星星 (使用径向渐变模拟 sparse stars)。
+       每块 550x550px 的宇宙区域里有一颗小小的白点 */
+    radial-gradient(white, rgba(255, 255, 255, 0.2) 2px, transparent 40px),
+
+    /* [第四层]: 密集的小星星 (dense stars)。
+       更小、更密集的白点，每块 350x350px 区域里有几颗 */
+    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 30px);
+
+  /* ----- 3. 为每一层背景设置大小和位置 ----- */
+  background-size:
+    cover,         /* 主光束铺满 */
+    cover,         /* 反光束铺满 */
+    550px 550px,   /* 大星星图案平铺大小 */
+    350px 350px;   /* 小星星图案平铺大小 */
+
+  background-position:
+    0 0,           /* 主光束位置 */
+    0 0,           /* 反光束位置 */
+    0 0,           /* 大星星 1 的初始位置 */
+    130px 270px;   /* 小星星 2 的偏移位置，增加错落感 */
 }
 
 /* 定义光斑的运动轨迹 */
