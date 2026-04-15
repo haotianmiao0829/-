@@ -293,6 +293,7 @@ const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
         className="text-4xl md:text-5xl font-light tracking-tight"
+        style={{ fontFamily: 'Noto Sans SC, Poppins, sans-serif' }}
       >
         {subtitle}
       </motion.h2>
@@ -310,7 +311,7 @@ const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-6xl md:text-8xl font-light tracking-[0.3em] mb-8 leading-none">
+        <h1 className="text-6xl md:text-8xl font-light tracking-[0.3em] mb-8 leading-none" style={{ fontFamily: 'Noto Sans SC, Poppins, sans-serif' }}>
           浩天<span className="text-accent">淼</span>
         </h1>
         <p className="max-w-xl text-white/60 text-lg md:text-xl font-light leading-relaxed mb-12">
@@ -955,18 +956,152 @@ const PodcastsView = () => {
 
 // --- Main App ---
 
+// --- Particle System Component ---
+const ParticleBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: 0.5, y: 0.5 });
+  const particlesRef = useRef<any[]>([]);
+  const animationRef = useRef<number>();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Create particles
+    const particleCount = 150;
+    particlesRef.current = [];
+    for (let i = 0; i < particleCount; i++) {
+      particlesRef.current.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 2 + 1,
+        opacity: Math.random() * 0.5 + 0.2,
+        originalX: 0,
+        originalY: 0,
+      });
+      particlesRef.current[i].originalX = particlesRef.current[i].x;
+      particlesRef.current[i].originalY = particlesRef.current[i].y;
+    }
+
+    // Mouse move handler
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.current = {
+        x: e.clientX / canvas.width,
+        y: e.clientY / canvas.height
+      };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    // Animation loop
+    const animate = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const mouseX = mouseRef.current.x * canvas.width;
+      const mouseY = mouseRef.current.y * canvas.height;
+
+      particlesRef.current.forEach((p, i) => {
+        // Mouse attraction - stronger
+        const dx = mouseX - p.x;
+        const dy = mouseY - p.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDistance = 350;
+        
+        if (distance < maxDistance) {
+          const force = (maxDistance - distance) / maxDistance;
+          p.x += dx * force * 0.04;
+          p.y += dy * force * 0.04;
+        }
+
+        // Return to original position
+        p.x += (p.originalX - p.x) * 0.01;
+        p.y += (p.originalY - p.y) * 0.01;
+
+        // Natural movement
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 65, ${p.opacity})`;
+        ctx.fill();
+
+        // Glow effect
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
+      });
+
+      // Particles will still be attracted to mouse position, no visible light dot
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-0"
+      style={{ background: 'transparent' }}
+    />
+  );
+};
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [currentArticleId, setCurrentArticleId] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+  const [isSearchClickAnimation, setIsSearchClickAnimation] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<{ type: string; id?: string; page?: Page } | null>(null);
 
   useEffect(() => {
     setIsPageTransitioning(true);
     const timer = setTimeout(() => setIsPageTransitioning(false), 800);
     return () => clearTimeout(timer);
   }, [currentPage]);
+
+  useEffect(() => {
+    if (isSearchClickAnimation && pendingNavigation) {
+      const timer = setTimeout(() => {
+        if (pendingNavigation.type === '文章' && pendingNavigation.id) {
+          setCurrentArticleId(pendingNavigation.id);
+          setCurrentPage('article-detail');
+        } else if (pendingNavigation.page) {
+          setCurrentPage(pendingNavigation.page);
+        }
+        setIsSearchClickAnimation(false);
+        setPendingNavigation(null);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+  }, [isSearchClickAnimation, pendingNavigation]);
+
+
 
   const allContent = [
     ...PROJECTS.map(p => ({ ...p, type: '项目', page: 'projects' as Page })),
@@ -1017,14 +1152,50 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden tech-grid">
-      {/* Background Elements */}
+    <div className="min-h-screen relative overflow-x-hidden tech-grid flex flex-col">
+      {/* Scanline Effect */}
+      <div className="fixed inset-0 pointer-events-none scanlines z-10" />
+      
+      {/* Canvas Particle Background */}
+      <ParticleBackground />
+      
+      {/* Background Elements - Very Subtle */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-white/5 blur-[120px] rounded-full" />
-        {/* Subtle Green Corner Glows */}
-        <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full" />
-        <div className="absolute -bottom-24 -right-24 w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full" />
+        {/* Main Green Glows - Very faint */}
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.08, 0.15, 0.08]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/3 blur-[120px] rounded-full" 
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.15, 1],
+            opacity: [0.06, 0.12, 0.06]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/2 blur-[120px] rounded-full" 
+        />
+        
+        {/* Subtle Green Corner Glows - Extra faint */}
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.03, 0.08, 0.03]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-emerald-500/5 blur-[120px] rounded-full" 
+        />
+        <motion.div 
+          animate={{ 
+            scale: [1, 1.25, 1],
+            opacity: [0.03, 0.07, 0.03]
+          }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          className="absolute -bottom-24 -right-24 w-[400px] h-[400px] bg-emerald-500/5 blur-[120px] rounded-full" 
+        />
       </div>
 
       {/* Navigation */}
@@ -1084,7 +1255,7 @@ export default function App() {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20 flex-grow">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentArticleId || currentPage}
@@ -1101,23 +1272,6 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
-
-      {/* Subtle Footer Accent */}
-      <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-white/5">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-emerald-500/40 animate-pulse" />
-            <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.3em]">
-              Digital Ether / <span className="text-emerald-500/40">Miao</span>
-            </p>
-          </div>
-          <div className="flex items-center gap-6">
-            <span className="text-[10px] font-mono text-white/10 uppercase tracking-widest">Est. 2024</span>
-            <div className="w-8 h-[1px] bg-emerald-500/20" />
-            <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest hover:text-accent transition-colors cursor-pointer">Back to Top</span>
-          </div>
-        </div>
-      </footer>
 
       {/* Search Overlay */}
       <AnimatePresence>
@@ -1158,14 +1312,14 @@ export default function App() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.05 }}
                         onClick={() => {
-                          if (item.type === '文章') {
-                            setCurrentArticleId(item.id);
-                            setCurrentPage('article-detail');
-                          } else {
-                            setCurrentPage(item.page);
-                          }
                           setIsSearchOpen(false);
                           setSearchQuery("");
+                          setPendingNavigation({
+                            type: item.type,
+                            id: item.id,
+                            page: item.page
+                          });
+                          setIsSearchClickAnimation(true);
                         }}
                         className="group p-6 border border-white/5 hover:border-accent/30 hover:bg-white/5 transition-all cursor-pointer"
                       >
@@ -1196,21 +1350,76 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Search Click Animation Overlay */}
+      <AnimatePresence>
+        {isSearchClickAnimation && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center bg-black"
+          >
+            {/* Center Glow Effect */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 15, opacity: [0, 0.8, 0] }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="absolute w-32 h-32 rounded-full bg-accent/30"
+            />
+            
+            {/* Welcome Back Text */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-center z-10"
+            >
+              <motion.div
+                initial={{ scale: 0.8 }}
+                animate={{ scale: [0.8, 1.1, 1] }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-4xl md:text-6xl font-light mb-4"
+                style={{ fontFamily: 'Noto Sans SC, Poppins, sans-serif' }}
+              >
+                <span className="text-white">欢迎</span>
+                <span className="text-accent">进入</span>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="font-mono text-xs text-white/30 uppercase tracking-[0.5em]"
+              >
+                正在加载...
+              </motion.div>
+            </motion.div>
+
+            {/* Progress Bar */}
+            <motion.div
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 1, delay: 0.3, ease: "easeInOut" }}
+              className="absolute bottom-20 left-0 h-1 bg-accent shadow-[0_0_20px_rgba(0,255,65,0.5)]"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Footer */}
-      <footer className="border-t border-white/5 py-12">
+      <footer className="border-t border-white/10 py-16 bg-black/30">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col gap-2">
-            <span className="font-mono text-[10px] text-white/20 uppercase tracking-widest">系统状态</span>
+            <span className="font-mono text-sm text-white/40 uppercase tracking-widest">系统状态</span>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="font-mono text-[10px] uppercase tracking-widest">所有系统运行正常</span>
+              <div className="w-3 h-3 rounded-full bg-accent animate-pulse" />
+              <span className="font-mono text-sm text-white/60 uppercase tracking-widest">所有系统运行正常</span>
             </div>
           </div>
-          <div className="font-mono text-[10px] text-white/20 uppercase tracking-widest">
-            © 2024 创意技术专家。精工细作。
+          <div className="font-mono text-sm text-white/40 uppercase tracking-widest">
+            © 2025 创意技术专家。精工细作。
           </div>
           <div className="flex gap-6">
-            <Github size={16} className="text-white/20 hover:text-white cursor-pointer transition-colors" />
+            <Github size={20} className="text-white/40 hover:text-white cursor-pointer transition-colors" />
           </div>
         </div>
       </footer>
