@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+/* 引入 Fusion Pixel 像素字体 */
+@font-face {
+  font-family: 'Fusion Pixel';
+  src: url('/fonts/fusion-pixel.ttf') format('truetype'),
+       url('/fonts/fusion-pixel.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "Poppins", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Orbitron", "Noto Sans SC", sans-serif;
