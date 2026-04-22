@@ -32,7 +32,7 @@ const WechatIcon = ({ size = 24, className = "" }) => (
 
 // --- Types ---
 
-type Page = 'home' | 'about' | 'projects' | 'articles' | 'podcasts' | 'article-detail';
+type Page = 'home' | 'about' | 'projects' | 'articles' | 'podcasts' | 'article-detail' | 'category-detail';
 
 interface Project {
   id: string;
@@ -40,6 +40,8 @@ interface Project {
   tags: string[];
   link: string;
   year: string;
+  description?: string;
+  category?: string;
 }
 
 interface Article {
@@ -72,34 +74,84 @@ interface Podcast {
 // --- Mock Data ---
 
 const PROJECTS: Project[] = [
+  // AI产品集 - 作品
   {
-    id: '4',
-    title: 'AI产品集',
-    tags: ['AI', 'Machine Learning', 'UX Design'],
+    id: 'ai-2',
+    title: '未完待续',
+    description: '更多精彩即将呈现',
+    tags: ['Coming Soon', 'WIP'],
     link: '#',
-    year: '2025'
+    year: '2025',
+    category: 'AI产品集'
+  },
+  
+  // 交互设计 - 作品
+  {
+    id: 'ux-1',
+    title: '情绪花园',
+    description: '一个结合 AI 与情感互动的创意项目',
+    tags: ['AI', 'Emotion Design', 'Creative Coding'],
+    link: '#',
+    year: '2025',
+    category: '交互设计'
   },
   {
-    id: '1',
-    title: '交互设计',
-    tags: ['React', 'Three.js', 'WebSockets'],
+    id: 'ux-2',
+    title: '未完待续',
+    description: '更多精彩即将呈现',
+    tags: ['Coming Soon', 'WIP'],
     link: '#',
-    year: '2024'
+    year: '2024',
+    category: '交互设计'
+  },
+  
+  // 视频集 - 作品
+  {
+    id: 'video-1',
+    title: '创意短片',
+    description: '实验性视觉艺术作品',
+    tags: ['Video Art', 'Experimental', 'After Effects'],
+    link: '#',
+    year: '2023',
+    category: '视频集'
   },
   {
-    id: '2',
-    title: '视频集',
-    tags: ['Rust', 'Solidity', 'Wasm'],
+    id: 'video-2',
+    title: '纪录片',
+    description: '真实故事的影像记录',
+    tags: ['Documentary', 'Filmmaking', 'Storytelling'],
     link: '#',
-    year: '2023'
+    year: '2023',
+    category: '视频集'
+  },
+  
+  // 摄影集 - 作品
+  {
+    id: 'photo-1',
+    title: '人物肖像',
+    description: '人物肖像摄影作品',
+    tags: ['Portrait', 'People', 'Photography'],
+    link: '#',
+    year: '2023',
+    category: '摄影集'
   },
   {
-    id: '3',
-    title: '摄影集',
-    tags: ['Design', 'Swift', 'Metal'],
+    id: 'photo-2',
+    title: '未完待续',
+    description: '更多精彩即将呈现',
+    tags: ['Coming Soon', 'WIP'],
     link: '#',
-    year: '2023'
+    year: '2023',
+    category: '摄影集'
   }
+];
+
+// 分类数据
+const CATEGORIES = [
+  { id: 'cat-ai', name: 'AI产品集', description: 'AI 驱动的创意项目集合', year: '2025' },
+  { id: 'cat-ux', name: '交互设计', description: '用户体验与界面设计作品', year: '2024' },
+  { id: 'cat-video', name: '视频集', description: '影像与视觉艺术作品', year: '2023' },
+  { id: 'cat-photo', name: '摄影集', description: '摄影与视觉记录', year: '2023' }
 ];
 
 const ARTICLES: Article[] = [
@@ -303,7 +355,7 @@ const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }
 
 // --- Page Views ---
 
-const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
+const HomeView = ({ setPage, setSelectedCategory }: { setPage: (p: Page) => void; setSelectedCategory: (name: string) => void }) => (
   <div className="space-y-32">
     <section className="min-h-[70vh] flex flex-col justify-center items-center text-center">
       <motion.div
@@ -334,12 +386,14 @@ const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
       </motion.div>
     </section>
 
-    <section>
-      <SectionHeader title="精选" subtitle="近期作品" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {PROJECTS.filter(project => project.title === 'AI产品集' || project.title === '交互设计').map((project, i) => (
+    <section className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
+      <div className="px-6 md:px-12 lg:px-24">
+        <SectionHeader title="精选" subtitle="作品集" />
+      </div>
+      <div className="px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+        {CATEGORIES.slice(0, 2).map((category, i) => (
           <motion.div
-            key={project.id}
+            key={category.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ 
@@ -348,26 +402,27 @@ const HomeView = ({ setPage }: { setPage: (p: Page) => void }) => (
               transition: { duration: 0.3, ease: "easeOut" }
             }}
             transition={{ delay: i * 0.1 }}
-            onClick={() => setPage('projects')}
-            className="group p-8 glass hover:border-accent/50 transition-all duration-500 cursor-pointer relative overflow-hidden"
+            onClick={() => setSelectedCategory(category.name)}
+            className="group p-12 glass hover:border-accent/50 transition-all duration-500 cursor-pointer relative overflow-hidden"
           >
-            <div className="flex justify-between items-start mb-6">
-              <span className="font-mono text-xs text-white/30">{project.year}</span>
-              <ExternalLink size={16} className="text-white/30 group-hover:text-accent transition-colors" />
+            <div className="flex justify-between items-start mb-8">
+              <span className="font-mono text-sm text-white/30">{category.year}</span>
+              <ExternalLink size={20} className="text-white/30 group-hover:text-accent transition-colors" />
             </div>
-            <h3 className="text-2xl font-light mb-4 group-hover:text-accent transition-colors">{project.title}</h3>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {project.tags.map(tag => (
-                <span key={tag} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 bg-white/5 border border-white/10">
-                  {tag}
-                </span>
-              ))}
+            <h3 className="text-3xl font-light mb-6 group-hover:text-accent transition-colors">{category.name}</h3>
+            {category.description && (
+              <p className="text-white/60 text-base mb-6 leading-relaxed">{category.description}</p>
+            )}
+            <div className="flex flex-wrap gap-3 mb-12">
+              <span className="text-xs font-mono uppercase tracking-wider px-3 py-2 bg-white/5 border border-white/10">
+                {PROJECTS.filter(p => p.category === category.name).length} 个作品
+              </span>
             </div>
             
             {/* View Details Button */}
-            <div className="absolute bottom-0 left-0 right-0 h-12 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center gap-2">
-              <span className="text-black font-mono text-[10px] font-bold uppercase tracking-widest">查看详情</span>
-              <ChevronRight size={14} className="text-black" />
+            <div className="absolute bottom-0 left-0 right-0 h-16 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center gap-3">
+              <span className="text-black font-mono text-sm font-bold uppercase tracking-widest">查看作品</span>
+              <ChevronRight size={18} className="text-black" />
             </div>
           </motion.div>
         ))}
@@ -726,40 +781,235 @@ const AboutView = () => {
   );
 };
 
-const ProjectsView = () => (
+const ProjectsView = ({ setSelectedCategory }: { setSelectedCategory: (name: string) => void }) => (
   <div className="py-20">
-    <SectionHeader title="归档" subtitle="精选作品" />
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      {PROJECTS.map((project, i) => (
+    <div className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
+      <div className="px-6 md:px-12 lg:px-24">
+        <SectionHeader title="归档" subtitle="作品集" />
+      </div>
+      
+      <div className="px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+        {CATEGORIES.map((category, i) => (
         <motion.div
-          key={project.id}
+          key={category.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ scale: 1.02 }}
           transition={{ delay: i * 0.1 }}
           className="group relative cursor-pointer"
+          onClick={() => setSelectedCategory(category.name)}
         >
-          <div className="aspect-video bg-white/5 border border-white/10 mb-6 overflow-hidden relative">
+          <div className="aspect-video bg-white/5 border border-white/10 mb-8 overflow-hidden relative">
             <div className="absolute inset-0 tech-grid opacity-10 group-hover:opacity-20 transition-opacity" />
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
               <div className="flex flex-col items-center gap-4">
-                <span className="font-mono text-xs uppercase tracking-[0.5em] bg-black/80 px-8 py-4 border border-accent/50 text-accent">查看详情</span>
-                <div className="w-12 h-px bg-accent/50" />
+                <span className="font-mono text-sm uppercase tracking-[0.5em] bg-black/80 px-10 py-5 border border-accent/50 text-accent">查看作品</span>
+                <div className="w-16 h-px bg-accent/50" />
               </div>
             </div>
           </div>
           <div className="flex justify-between items-end">
             <div>
-              <span className="font-mono text-[10px] text-accent mb-2 block uppercase tracking-widest">{project.tags.join(' / ')}</span>
-              <h3 className="text-3xl font-light group-hover:translate-x-2 transition-transform duration-500">{project.title}</h3>
+              <span className="font-mono text-sm text-accent mb-3 block uppercase tracking-widest">
+                {PROJECTS.filter(p => p.category === category.name).length} 个作品
+              </span>
+              <h3 className="text-4xl font-light group-hover:translate-x-2 transition-transform duration-500 mb-3">{category.name}</h3>
+              {category.description && (
+                <p className="text-white/60 text-base">{category.description}</p>
+              )}
             </div>
-            <span className="font-mono text-xs text-white/20">{project.year}</span>
+            <span className="font-mono text-sm text-white/30">{category.year}</span>
           </div>
         </motion.div>
       ))}
+      </div>
     </div>
   </div>
 );
+
+const CategoryDetailView = ({ categoryName, onBack, onProjectClick }: { categoryName: string; onBack: () => void; onProjectClick: (id: string) => void }) => {
+  const categoryProjects = PROJECTS.filter(p => p.category === categoryName);
+  
+  return (
+    <div className="py-20">
+      <div className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
+        <div className="px-6 md:px-12 lg:px-24 mb-12">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-white/50 hover:text-accent transition-colors font-mono text-sm uppercase tracking-widest"
+          >
+            <ChevronRight size={16} className="rotate-180" />
+            返回
+          </button>
+        </div>
+        
+        <div className="px-6 md:px-12 lg:px-24">
+          <SectionHeader title={categoryName} subtitle={`${categoryProjects.length} 个作品`} />
+        </div>
+        
+        <div className="px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+          {categoryProjects.map((project, i) => (
+          <motion.div
+            key={project.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ delay: i * 0.1 }}
+            className="group relative cursor-pointer"
+            onClick={() => onProjectClick(project.id)}
+          >
+            <div className="aspect-video bg-white/5 border border-white/10 mb-8 overflow-hidden relative">
+              <div className="absolute inset-0 tech-grid opacity-10 group-hover:opacity-20 transition-opacity" />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+                <div className="flex flex-col items-center gap-4">
+                  <span className="font-mono text-sm uppercase tracking-[0.5em] bg-black/80 px-10 py-5 border border-accent/50 text-accent">
+                    {project.link !== '#' ? '查看作品' : '查看详情'}
+                  </span>
+                  <div className="w-16 h-px bg-accent/50" />
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between items-end">
+              <div>
+                <span className="font-mono text-sm text-accent mb-3 block uppercase tracking-widest">
+                  {project.tags.join(' / ')}
+                </span>
+                <h3 className="text-4xl font-light group-hover:translate-x-2 transition-transform duration-500 mb-3">
+                  {project.title}
+                </h3>
+                {project.description && (
+                  <p className="text-white/60 text-base">{project.description}</p>
+                )}
+              </div>
+              <span className="font-mono text-sm text-white/30">{project.year}</span>
+          </div>
+        </motion.div>
+        ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProjectDetailView = ({ project, onBack }: { project: Project; onBack: () => void }) => {
+  const [isPdfExpanded, setIsPdfExpanded] = useState(false);
+  
+  return (
+    <div className="py-20">
+      <div className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
+        <div className="px-6 md:px-12 lg:px-24 mb-12">
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 text-white/50 hover:text-accent transition-colors font-mono text-sm uppercase tracking-widest"
+          >
+            <ChevronRight size={16} className="rotate-180" />
+            返回
+          </button>
+        </div>
+        
+        <div className="px-6 md:px-12 lg:px-24">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="mb-8">
+              <span className="font-mono text-sm text-accent mb-4 block uppercase tracking-widest">
+                {project.tags.join(' / ')}
+              </span>
+              <h1 className="text-5xl md:text-6xl font-light mb-4" style={{ fontFamily: 'Fusion Pixel, Noto Sans SC, Poppins, sans-serif' }}>
+                {project.title}
+              </h1>
+              {project.description && (
+                <p className="text-white/60 text-lg mb-4">
+                  {project.description}
+                </p>
+              )}
+              <span className="font-mono text-sm text-white/30">{project.year}</span>
+            </div>
+            
+            <div className="glass p-8 md:p-12 mb-8">
+              {project.title === '情绪花园' ? (
+                <>
+                  <div 
+                    className="aspect-video bg-transparent border-none mb-8 cursor-pointer overflow-hidden"
+                    onClick={() => setIsPdfExpanded(true)}
+                  >
+                    <iframe
+                      src="/files/情绪花园.pdf#toolbar=0&navpanes=0&scrollbar=0"
+                      title="情绪花园"
+                      className="w-full h-full"
+                      style={{ border: 'none' }}
+                    />
+                  </div>
+                  <p className="text-white/40 text-sm text-center mb-8">
+                    点击PDF区域可以放大观看
+                  </p>
+                </>
+              ) : (
+                <div className="aspect-video bg-white/5 border border-white/10 flex items-center justify-center mb-8">
+                  <div className="flex flex-col items-center gap-4 text-white/30">
+                    <div className="text-4xl">📁</div>
+                    <span className="font-mono text-sm uppercase tracking-wider">
+                      项目内容区域</span>
+                  </div>
+                </div>
+              )}
+              
+              <div className="space-y-6 text-white/70">
+                <div className="space-y-2">
+                  <h3 className="text-xl font-light text-white/90">项目概述</h3>
+                  <p className="text-base">
+                    {project.description}
+                  </p>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="text-xl font-light text-white/90">项目标签</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags.map(tag => (
+                      <span key={tag} className="text-xs font-mono uppercase tracking-wider px-3 py-2 bg-white/5 border border-white/10 text-white/60">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+      
+      {isPdfExpanded && project.title === '情绪花园' && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setIsPdfExpanded(false)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+            onClick={() => setIsPdfExpanded(false)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          <div 
+            className="w-full h-full max-w-6xl max-h-[90vh] bg-transparent border-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src="/files/情绪花园.pdf#toolbar=0&navpanes=0&scrollbar=0"
+              title="情绪花园（放大）"
+              className="w-full h-full"
+              style={{ border: 'none' }}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 const ArticleDetailView = ({ article, onBack }: { article: Article; onBack: () => void }) => {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -1073,6 +1323,8 @@ const ParticleBackground = () => {
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [currentArticleId, setCurrentArticleId] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isPageTransitioning, setIsPageTransitioning] = useState(false);
@@ -1134,10 +1386,39 @@ export default function App() {
       }
     }
     
+    if (selectedProject) {
+      const project = PROJECTS.find(p => p.id === selectedProject);
+      if (project) {
+        return (
+          <ProjectDetailView 
+            project={project} 
+            onBack={() => {
+              setSelectedProject(null);
+            }} 
+          />
+        );
+      }
+    }
+    
+    if (selectedCategory) {
+      return (
+        <CategoryDetailView 
+          categoryName={selectedCategory} 
+          onBack={() => {
+            setSelectedCategory(null);
+            setCurrentPage('projects');
+          }}
+          onProjectClick={(id) => {
+            setSelectedProject(id);
+          }} 
+        />
+      );
+    }
+    
     switch (currentPage) {
-      case 'home': return <HomeView setPage={setCurrentPage} />;
+      case 'home': return <HomeView setPage={setCurrentPage} setSelectedCategory={setSelectedCategory} />;
       case 'about': return <AboutView />;
-      case 'projects': return <ProjectsView />;
+      case 'projects': return <ProjectsView setSelectedCategory={setSelectedCategory} />;
       case 'articles': return (
         <ArticlesView 
           onArticleClick={(id) => {
@@ -1147,7 +1428,7 @@ export default function App() {
         />
       );
       case 'podcasts': return <PodcastsView />;
-      default: return <HomeView setPage={setCurrentPage} />;
+      default: return <HomeView setPage={setCurrentPage} setSelectedCategory={setSelectedCategory} />;
     }
   };
 
