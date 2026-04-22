@@ -386,11 +386,11 @@ const HomeView = ({ setPage, setSelectedCategory }: { setPage: (p: Page) => void
       </motion.div>
     </section>
 
-    <section className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
-      <div className="px-6 md:px-12 lg:px-24">
+    <section>
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <SectionHeader title="精选" subtitle="作品集" />
       </div>
-      <div className="px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="w-full px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-12">
         {CATEGORIES.slice(0, 2).map((category, i) => (
           <motion.div
             key={category.id}
@@ -533,10 +533,9 @@ const AboutView = () => {
                 <div className="absolute inset-0 tech-grid opacity-20" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <img 
-                    src="https://picsum.photos/seed/haitian/400/400" 
+                    src="/files/055bb64ff9f971595a2e8fb379274da0.jpg" 
                     alt="个人照片" 
                     className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
                   />
                 </div>
               </div>
@@ -783,12 +782,12 @@ const AboutView = () => {
 
 const ProjectsView = ({ setSelectedCategory }: { setSelectedCategory: (name: string) => void }) => (
   <div className="py-20">
-    <div className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
-      <div className="px-6 md:px-12 lg:px-24">
+    <div>
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <SectionHeader title="归档" subtitle="作品集" />
       </div>
       
-      <div className="px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="w-full px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-12">
         {CATEGORIES.map((category, i) => (
         <motion.div
           key={category.id}
@@ -832,8 +831,8 @@ const CategoryDetailView = ({ categoryName, onBack, onProjectClick }: { category
   
   return (
     <div className="py-20">
-      <div className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
-        <div className="px-6 md:px-12 lg:px-24 mb-12">
+      <div>
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mb-12">
           <button
             onClick={onBack}
             className="flex items-center gap-2 text-white/50 hover:text-accent transition-colors font-mono text-sm uppercase tracking-widest"
@@ -843,11 +842,11 @@ const CategoryDetailView = ({ categoryName, onBack, onProjectClick }: { category
           </button>
         </div>
         
-        <div className="px-6 md:px-12 lg:px-24">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
           <SectionHeader title={categoryName} subtitle={`${categoryProjects.length} 个作品`} />
         </div>
         
-        <div className="px-6 md:px-12 lg:px-24 grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="w-full px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-12">
           {categoryProjects.map((project, i) => (
           <motion.div
             key={project.id}
@@ -896,8 +895,8 @@ const ProjectDetailView = ({ project, onBack }: { project: Project; onBack: () =
   
   return (
     <div className="py-20">
-      <div className="w-screen -mx-6 md:-mx-12 lg:-mx-24">
-        <div className="px-6 md:px-12 lg:px-24 mb-12">
+      <div>
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mb-12">
           <button
             onClick={onBack}
             className="flex items-center gap-2 text-white/50 hover:text-accent transition-colors font-mono text-sm uppercase tracking-widest"
@@ -907,7 +906,7 @@ const ProjectDetailView = ({ project, onBack }: { project: Project; onBack: () =
           </button>
         </div>
         
-        <div className="px-6 md:px-12 lg:px-24">
+        <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
