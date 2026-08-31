@@ -383,9 +383,16 @@ textarea:focus-visible {
 
 .hero-manifesto {
   width: 100%;
-  margin-top: auto;
-  margin-bottom: 58px;
   text-align: center;
+}
+
+.hero-manifesto-anchor {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(-50%);
 }
 
 .hero-manifesto h1 {
@@ -1929,7 +1936,7 @@ textarea:focus-visible {
   }
 
   .hero-manifesto {
-    margin-bottom: 52px;
+    width: 100%;
   }
 
   .hero-manifesto h1 {
@@ -1942,9 +1949,11 @@ textarea:focus-visible {
   }
 
   .hero-footerline {
-    position: static;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
     grid-template-columns: 1fr auto;
-    margin-top: 4px;
   }
 
   .hero-footerline span:last-child {

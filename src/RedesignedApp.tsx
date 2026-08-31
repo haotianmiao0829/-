@@ -412,12 +412,14 @@ function HomeView({
           </Reveal>
         </div>
 
-        <Reveal className="hero-manifesto">
-          <h1 id="hero-title">
-            <span>一定要做有思考的设计，一定要做有温度的产品，持续迭代，持续成长，持续向前，坚持不懈</span>
-            <span>改逻辑，塑人生，忘忧愁，得永生</span>
-          </h1>
-        </Reveal>
+        <div className="hero-manifesto-anchor">
+          <Reveal className="hero-manifesto">
+            <h1 id="hero-title">
+              <span>一定要做有思考的设计，一定要做有温度的产品，持续迭代，持续成长，持续向前，坚持不懈</span>
+              <span>改逻辑，塑人生，忘忧愁，得永生</span>
+            </h1>
+          </Reveal>
+        </div>
 
         <div className="hero-footerline">
           <span>重庆 · 北京 · 远方</span>
