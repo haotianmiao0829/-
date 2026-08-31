@@ -1,13 +1,32 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>浩天淼-集</title>
+    <meta name="theme-color" content="#edf4f8" />
+    <meta name="description" content="浩天淼的个人作品集：产品、设计、影像与文字记录。" />
+    <title>浩天淼 / Portfolio</title>
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem('haotianmiao-theme');
+          const hour = Number(new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Shanghai',
+            hour: '2-digit',
+            hour12: false,
+          }).format(new Date()));
+          const automatic = hour >= 6 && hour < 18 ? 'light' : 'dark';
+          const theme = saved === 'light' || saved === 'dark' ? saved : automatic;
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

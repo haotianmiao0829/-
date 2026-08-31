@@ -32,9 +32,9 @@ const WechatIcon = ({ size = 24, className = "" }) => (
 
 // --- Types ---
 
-type Page = 'home' | 'about' | 'projects' | 'articles' | 'podcasts' | 'article-detail' | 'category-detail';
+export type Page = 'home' | 'about' | 'projects' | 'articles' | 'podcasts' | 'article-detail' | 'category-detail';
 
-interface Project {
+export interface Project {
   id: string;
   title: string;
   tags: string[];
@@ -44,7 +44,7 @@ interface Project {
   category?: string;
 }
 
-interface Article {
+export interface Article {
   id: string;
   title: string;
   date: string;
@@ -61,7 +61,7 @@ interface Comment {
   date: string;
 }
 
-interface Podcast {
+export interface Podcast {
   id: string;
   title: string;
   duration: string;
@@ -73,7 +73,7 @@ interface Podcast {
 
 // --- Mock Data ---
 
-const PROJECTS: Project[] = [
+export const PROJECTS: Project[] = [
   // AI产品集 - 作品
   {
     id: 'ai-2',
@@ -147,14 +147,14 @@ const PROJECTS: Project[] = [
 ];
 
 // 分类数据
-const CATEGORIES = [
+export const CATEGORIES = [
   { id: 'cat-ai', name: 'AI产品集', description: 'AI 驱动的创意项目集合', year: '2025' },
   { id: 'cat-ux', name: '交互设计', description: '用户体验与界面设计作品', year: '2024' },
   { id: 'cat-video', name: '视频集', description: '影像与视觉艺术作品', year: '2023' },
   { id: 'cat-photo', name: '摄影集', description: '摄影与视觉记录', year: '2023' }
 ];
 
-const ARTICLES: Article[] = [
+export const ARTICLES: Article[] = [
   {
     id: '1',
     title: '致2024年-19岁的自己',
@@ -269,7 +269,7 @@ Respect`
   }
 ];
 
-const PODCASTS: Podcast[] = [
+export const PODCASTS: Podcast[] = [
   {
     id: '1',
     title: 'No.1【叁水漫聊】致2024年-19岁',
@@ -707,11 +707,10 @@ const AboutView = () => {
                     borderColor: 'rgba(0,255,157,0.5)',
                     color: 'rgba(0,255,157,1)'
                   }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.2, delay: i * 0.05 }}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
                 >
                   {skill}
                 </motion.span>
@@ -735,11 +734,10 @@ const AboutView = () => {
                     borderColor: 'rgba(0,255,157,0.5)',
                     color: 'rgba(0,255,157,1)'
                   }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.2, delay: i * 0.05 }}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
                 >
                   {skill}
                 </motion.span>
@@ -763,11 +761,10 @@ const AboutView = () => {
                     borderColor: 'rgba(0,255,157,0.5)',
                     color: 'rgba(0,255,157,1)'
                   }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.2, delay: i * 0.05 }}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
                 >
                   {skill}
                 </motion.span>
