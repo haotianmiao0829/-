@@ -332,16 +332,14 @@ textarea:focus-visible {
 .hero-section {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   min-height: calc(100vh - 138px);
   padding: 58px 0 44px;
 }
 
-.hero-copy {
+.hero-intro {
   width: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  text-align: center;
 }
 
 .hero-kicker,
@@ -360,48 +358,54 @@ textarea:focus-visible {
 .hero-kicker {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 28px;
+  justify-content: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
   color: var(--accent-strong);
-  font-size: 10px;
+  font-size: 12px;
+}
+
+.hero-kicker::before {
+  display: block;
+  width: 42px;
+  height: 1px;
+  background: var(--accent-strong);
+  content: "";
 }
 
 .hero-name {
-  margin: 0 0 20px;
-  color: var(--accent-strong);
-  font-size: clamp(16px, 1.8vw, 21px);
-  font-weight: 350;
-  letter-spacing: 0.12em;
-}
-
-.hero-copy h1 {
-  max-width: 100%;
   margin: 0;
-  font-size: clamp(32px, 3.4vw, 48px);
+  color: var(--ink);
+  font-size: clamp(34px, 4vw, 54px);
   font-weight: 300;
-  letter-spacing: 0;
-  line-height: 1.28;
+  letter-spacing: 0.04em;
 }
 
-.hero-copy h1 span {
-  display: block;
-  white-space: nowrap;
+.hero-manifesto {
+  width: 100%;
+  margin-top: auto;
+  margin-bottom: 58px;
+  text-align: center;
 }
 
-.hero-copy h1 span:last-child {
-  color: var(--accent-strong);
-}
-
-.hero-statement {
-  max-width: 620px;
-  margin: 32px 0 0;
-  margin-inline: auto;
+.hero-manifesto h1 {
+  max-width: 1180px;
+  margin: 0 auto;
   color: var(--muted-strong);
-  font-size: clamp(14px, 1.35vw, 18px);
+  font-size: clamp(15px, 1.55vw, 21px);
   font-weight: 300;
-  letter-spacing: 0.01em;
-  line-height: 1.9;
+  letter-spacing: 0.02em;
+  line-height: 2.05;
+}
+
+.hero-manifesto h1 span {
+  display: block;
+  white-space: normal;
+}
+
+.hero-manifesto h1 span:last-child {
+  margin-top: 12px;
+  color: var(--accent-strong);
 }
 
 .button {
@@ -1800,8 +1804,8 @@ textarea:focus-visible {
 }
 
 @media (max-width: 1020px) {
-  .hero-copy h1 {
-    font-size: clamp(34px, 6vw, 58px);
+  .hero-manifesto h1 {
+    font-size: clamp(15px, 2vw, 19px);
   }
 
   .desktop-nav {
@@ -1910,27 +1914,31 @@ textarea:focus-visible {
   }
 
   .hero-section {
-    display: flex;
-    flex-direction: column;
     align-items: stretch;
-    gap: 42px;
-    min-height: auto;
+    gap: 0;
+    min-height: calc(100svh - 104px);
     padding: 48px 0 32px;
   }
 
-  .hero-copy h1 {
+  .hero-kicker {
+    font-size: 10px;
+  }
+
+  .hero-name {
     font-size: clamp(30px, 8vw, 44px);
-    letter-spacing: 0;
   }
 
-  .hero-copy h1 span {
+  .hero-manifesto {
+    margin-bottom: 52px;
+  }
+
+  .hero-manifesto h1 {
+    font-size: 14px;
+    line-height: 2;
+  }
+
+  .hero-manifesto h1 span {
     white-space: normal;
-  }
-
-  .hero-statement {
-    margin-top: 24px;
-    font-size: 15px;
-    line-height: 1.85;
   }
 
   .hero-footerline {

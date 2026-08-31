@@ -405,20 +405,19 @@ function HomeView({
   return (
     <div className="home-view">
       <section className="hero-section" aria-labelledby="hero-title">
-        <div className="hero-copy">
+        <div className="hero-intro">
           <Reveal>
-            <div className="hero-kicker">DESIGN / PRODUCT / LIFE</div>
+            <div className="hero-kicker">探索</div>
             <p className="hero-name">浩天淼</p>
-            <h1 id="hero-title">
-              <span>一定要做有思考的设计，</span>
-              <span>一定要做有温度的产品。</span>
-            </h1>
-            <p className="hero-statement">
-              持续迭代，持续成长，持续向前，<br />
-              坚持不懈，改逻辑，塑人生，忘忧愁，得永生。
-            </p>
           </Reveal>
         </div>
+
+        <Reveal className="hero-manifesto">
+          <h1 id="hero-title">
+            <span>一定要做有思考的设计，一定要做有温度的产品，持续迭代，持续成长，持续向前，坚持不懈</span>
+            <span>改逻辑，塑人生，忘忧愁，得永生</span>
+          </h1>
+        </Reveal>
 
         <div className="hero-footerline">
           <span>重庆 · 北京 · 远方</span>
