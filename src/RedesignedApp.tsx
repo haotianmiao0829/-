@@ -185,6 +185,66 @@ function CursorFollower() {
   return <div ref={cursorRef} className="cursor-follower" aria-hidden="true" />;
 }
 
+function SplashScreen({ onSkip }: { onSkip: () => void }) {
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') onSkip();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onSkip]);
+
+  const transition = { duration: prefersReducedMotion ? 0 : 0.48, ease: [0.22, 1, 0.36, 1] as const };
+
+  return (
+    <motion.div
+      className="splash-screen"
+      role="dialog"
+      aria-label="浩天淼作品集启动页"
+      aria-modal="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={transition}
+    >
+      <div className="splash-content">
+        <motion.span
+          className="splash-kicker"
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+          animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ ...transition, delay: prefersReducedMotion ? 0 : 0.08 }}
+        >
+          浩天淼 / PORTFOLIO
+        </motion.span>
+        <motion.p
+          className="splash-statement"
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+          animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+          transition={{ ...transition, delay: prefersReducedMotion ? 0 : 0.14 }}
+        >
+          <span>一定要做有思考的设计，</span>
+          <span>一定要做有温度的产品，</span>
+          <span>持续迭代，持续成长，持续向前，</span>
+          <span>坚持不懈，改逻辑，塑人生，忘忧愁，得永生。</span>
+        </motion.p>
+        <motion.button
+          type="button"
+          className="splash-skip"
+          onClick={onSkip}
+          data-cursor="interactive"
+          initial={prefersReducedMotion ? false : { opacity: 0 }}
+          animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+          transition={{ ...transition, delay: prefersReducedMotion ? 0 : 0.3 }}
+        >
+          跳过 <ArrowRight size={15} />
+        </motion.button>
+      </div>
+    </motion.div>
+  );
+}
+
 function Reveal({
   children,
   className = '',
@@ -347,7 +407,7 @@ function HomeView({
       <section className="hero-section" aria-labelledby="hero-title">
         <div className="hero-copy">
           <Reveal>
-            <div className="hero-kicker"><Sparkles size={15} /> DESIGN / PRODUCT / LIFE</div>
+            <div className="hero-kicker">DESIGN / PRODUCT / LIFE</div>
             <p className="hero-name">浩天淼</p>
             <h1 id="hero-title">
               <span>一定要做有思考的设计，</span>
@@ -357,23 +417,8 @@ function HomeView({
               持续迭代，持续成长，持续向前，<br />
               坚持不懈，改逻辑，塑人生，忘忧愁，得永生。
             </p>
-            <div className="hero-actions">
-              <button type="button" className="button button-primary" onClick={() => onNavigate('projects')} data-cursor="interactive">
-                看看作品 <ArrowUpRight size={17} />
-              </button>
-              <button type="button" className="button button-quiet" onClick={() => onNavigate('about')} data-cursor="interactive">
-                认识我 <ArrowRight size={17} />
-              </button>
-            </div>
           </Reveal>
         </div>
-
-        <Reveal className="hero-portrait-wrap" delay={0.12}>
-          <div className="hero-portrait-frame">
-            <img src={PORTRAIT_SRC} alt="浩天淼的插画头像" className="hero-portrait" />
-            <span className="portrait-caption">A little curious, always moving.</span>
-          </div>
-        </Reveal>
 
         <div className="hero-footerline">
           <span>重庆 · 北京 · 远方</span>
@@ -769,6 +814,7 @@ const NAV_ITEMS: Array<{ page: Page; label: string; icon: typeof UserRound }> = 
 ];
 
 export default function RedesignedApp() {
+  const [splashVisible, setSplashVisible] = useState(true);
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].name);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -778,6 +824,22 @@ export default function RedesignedApp() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navHidden = useScrollDirection();
   const { mode, setMode, resolvedTheme } = useBeijingTheme();
+
+  const dismissSplash = useCallback(() => setSplashVisible(false), []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(dismissSplash, 1000);
+    return () => window.clearTimeout(timer);
+  }, [dismissSplash]);
+
+  useEffect(() => {
+    if (!splashVisible) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [splashVisible]);
 
   const goTo = useCallback((page: Page) => {
     setCurrentPage(page);
@@ -851,6 +913,7 @@ export default function RedesignedApp() {
 
   return (
     <div className={`site-shell theme-${resolvedTheme}`}>
+      <AnimatePresence>{splashVisible && <SplashScreen onSkip={dismissSplash} />}</AnimatePresence>
       <CursorFollower />
       <header className={`site-header ${navHidden ? 'is-hidden' : ''}`}>
         <div className="site-header-inner">
