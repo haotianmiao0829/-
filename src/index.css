@@ -340,6 +340,8 @@ textarea:focus-visible {
 .hero-copy {
   width: 100%;
   max-width: 1080px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .hero-kicker,
@@ -356,8 +358,9 @@ textarea:focus-visible {
 }
 
 .hero-kicker {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   margin-bottom: 28px;
   color: var(--accent-strong);
@@ -373,9 +376,9 @@ textarea:focus-visible {
 }
 
 .hero-copy h1 {
-  max-width: 850px;
+  max-width: 100%;
   margin: 0;
-  font-size: clamp(36px, 4.1vw, 58px);
+  font-size: clamp(32px, 3.4vw, 48px);
   font-weight: 300;
   letter-spacing: 0;
   line-height: 1.28;
@@ -391,10 +394,11 @@ textarea:focus-visible {
 }
 
 .hero-statement {
-  max-width: 580px;
+  max-width: 620px;
   margin: 32px 0 0;
+  margin-inline: auto;
   color: var(--muted-strong);
-  font-size: clamp(16px, 1.7vw, 22px);
+  font-size: clamp(14px, 1.35vw, 18px);
   font-weight: 300;
   letter-spacing: 0.01em;
   line-height: 1.9;
@@ -1915,7 +1919,7 @@ textarea:focus-visible {
   }
 
   .hero-copy h1 {
-    font-size: clamp(34px, 10vw, 54px);
+    font-size: clamp(30px, 8vw, 44px);
     letter-spacing: 0;
   }
 
@@ -1925,7 +1929,7 @@ textarea:focus-visible {
 
   .hero-statement {
     margin-top: 24px;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.85;
   }
 
