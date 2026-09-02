@@ -594,6 +594,7 @@ textarea:focus-visible {
 
 .category-card {
   position: relative;
+  width: 100%;
   min-height: 330px;
   overflow: hidden;
   display: flex;
