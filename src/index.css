@@ -533,8 +533,8 @@ textarea:focus-visible {
 
 .statement-band p {
   margin: 0;
-  font-size: clamp(17px, 1.65vw, 22px);
-  font-weight: 500;
+  font-size: clamp(15px, 1.35vw, 18px);
+  font-weight: 450;
   letter-spacing: 0;
 }
 
@@ -1981,7 +1981,7 @@ textarea:focus-visible {
   }
 
   .statement-band p {
-    font-size: 17px;
+    font-size: 15px;
     line-height: 1.55;
   }
 
