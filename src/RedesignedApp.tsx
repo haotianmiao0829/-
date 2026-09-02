@@ -297,7 +297,8 @@ function HeroAtmosphere() {
       const isDark = document.documentElement.dataset.theme === 'dark';
       const lineColor: [number, number, number] = isDark ? [184, 211, 221] : [115, 137, 149];
       const softColor: [number, number, number] = isDark ? [111, 164, 183] : [157, 177, 187];
-      const contourColor: [number, number, number] = isDark ? [143, 198, 223] : [220, 112, 106];
+      const contourTopColor: [number, number, number] = isDark ? [143, 198, 223] : [92, 157, 186];
+      const contourBottomColor: [number, number, number] = isDark ? [196, 169, 214] : [156, 143, 182];
 
       drawBundle({
         start: 0.05,
@@ -339,8 +340,8 @@ function HeroAtmosphere() {
         time: time * 0.65,
       });
 
-      drawContour(true, contourColor, time);
-      drawContour(false, contourColor, time * 0.86);
+      drawContour(true, contourTopColor, time);
+      drawContour(false, contourBottomColor, time * 0.86);
     };
 
     const render = (now: number) => {
