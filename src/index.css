@@ -115,7 +115,9 @@ textarea:focus-visible {
 }
 
 .splash-content {
-  width: min(980px, 100%);
+  width: min(860px, 100%);
+  margin: 0 auto;
+  text-align: center;
 }
 
 .splash-kicker {
@@ -130,7 +132,7 @@ textarea:focus-visible {
 .splash-statement {
   margin: 28px 0 0;
   color: var(--ink);
-  font-size: clamp(26px, 4.35vw, 64px);
+  font-size: clamp(20px, 2.6vw, 38px);
   font-weight: 300;
   letter-spacing: 0.01em;
   line-height: 1.5;
@@ -148,6 +150,7 @@ textarea:focus-visible {
 .splash-skip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   margin-top: 42px;
   padding: 0;
