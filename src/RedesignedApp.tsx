@@ -185,6 +185,150 @@ function CursorFollower() {
   return <div ref={cursorRef} className="cursor-follower" aria-hidden="true" />;
 }
 
+function HeroAtmosphere() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const hero = canvas?.parentElement;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !hero || !context) return;
+
+    let width = 0;
+    let height = 0;
+    let pixelRatio = 1;
+    let frame = 0;
+    let startedAt = performance.now();
+    let pointerX = 0.5;
+    let pointerY = 0.5;
+    let targetPointerX = 0.5;
+    let targetPointerY = 0.5;
+
+    const resize = () => {
+      const bounds = hero.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height);
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    };
+
+    const draw = (now: number) => {
+      if (!width || !height) resize();
+
+      const elapsed = (now - startedAt) / 1000;
+      const motionScale = prefersReducedMotion ? 0 : 1;
+      pointerX += (targetPointerX - pointerX) * 0.04;
+      pointerY += (targetPointerY - pointerY) * 0.04;
+      context.clearRect(0, 0, width, height);
+
+      const isDark = document.documentElement.dataset.theme === 'dark';
+      const palette = isDark
+        ? [[181, 227, 244], [143, 198, 223], [84, 137, 160]]
+        : [[57, 114, 143], [107, 159, 186], [151, 188, 204]];
+
+      for (let layer = 0; layer < 9; layer += 1) {
+        const baseY = height * (0.08 + layer * 0.12);
+        const amplitude = 8 + layer * 1.7;
+        const color = palette[layer % palette.length];
+        context.beginPath();
+        for (let x = -24; x <= width + 24; x += 14) {
+          const ratio = x / Math.max(width, 1);
+          const y = baseY
+            + Math.sin(ratio * 7 + layer * 0.72 + elapsed * (0.12 + layer * 0.012) * motionScale) * amplitude
+            + Math.sin(ratio * 17 - layer * 0.5 + elapsed * 0.08 * motionScale) * 3
+            + (pointerY - 0.5) * (layer - 4) * 2.5;
+          if (x === -24) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        }
+        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${0.035 + (layer % 3) * 0.014})`;
+        context.lineWidth = layer % 3 === 0 ? 1 : 0.7;
+        context.stroke();
+      }
+
+      for (let trail = 0; trail < 4; trail += 1) {
+        const color = palette[(trail + 1) % palette.length];
+        context.beginPath();
+        for (let x = -40; x <= width + 40; x += 18) {
+          const ratio = x / Math.max(width, 1);
+          const y = height * (0.2 + trail * 0.2)
+            + Math.sin(ratio * 4 + trail + elapsed * 0.06 * motionScale) * (18 + trail * 3)
+            + Math.cos(ratio * 9 - elapsed * 0.04 * motionScale) * 5;
+          if (x === -40) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        }
+        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.055)`;
+        context.lineWidth = 1.1;
+        context.stroke();
+      }
+
+      for (let index = 0; index < 26; index += 1) {
+        const progress = (index * 0.173 + elapsed * (0.008 + (index % 4) * 0.001) * motionScale) % 1;
+        const x = progress * (width + 120) - 60;
+        const y = height * (0.12 + ((index * 0.367) % 0.76))
+          + Math.sin(elapsed * 0.15 * motionScale + index) * 12
+          + (pointerX - 0.5) * (index % 5 - 2) * 4;
+        const length = 8 + (index % 4) * 4;
+        const color = palette[(index + 2) % palette.length];
+        context.beginPath();
+        context.moveTo(x, y);
+        context.lineTo(x + length, y - 1.5);
+        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${0.07 + (index % 3) * 0.018})`;
+        context.lineWidth = 0.8;
+        context.stroke();
+      }
+    };
+
+    const render = (now: number) => {
+      draw(now);
+      if (!prefersReducedMotion && document.visibilityState === 'visible') {
+        frame = window.requestAnimationFrame(render);
+      }
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const bounds = hero.getBoundingClientRect();
+      targetPointerX = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+      targetPointerY = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+    };
+
+    const handlePointerLeave = () => {
+      targetPointerX = 0.5;
+      targetPointerY = 0.5;
+    };
+
+    const handleVisibility = () => {
+      window.cancelAnimationFrame(frame);
+      if (document.visibilityState === 'visible') {
+        startedAt = performance.now() - (prefersReducedMotion ? 0 : 1);
+        render(performance.now());
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(hero);
+    hero.addEventListener('pointermove', handlePointerMove, { passive: true });
+    hero.addEventListener('pointerleave', handlePointerLeave, { passive: true });
+    document.addEventListener('visibilitychange', handleVisibility);
+    resize();
+    render(performance.now());
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      resizeObserver.disconnect();
+      hero.removeEventListener('pointermove', handlePointerMove);
+      hero.removeEventListener('pointerleave', handlePointerLeave);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [prefersReducedMotion]);
+
+  return <canvas ref={canvasRef} className="hero-atmosphere" aria-hidden="true" />;
+}
+
 function SplashScreen({ onSkip }: { onSkip: () => void }) {
   const prefersReducedMotion = useReducedMotion();
 
@@ -405,6 +549,7 @@ function HomeView({
   return (
     <div className="home-view">
       <section className="hero-section" aria-labelledby="hero-title">
+        <HeroAtmosphere />
         <div className="hero-intro">
           <Reveal>
             <div className="hero-kicker">探索</div>
