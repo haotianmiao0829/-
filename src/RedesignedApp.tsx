@@ -217,70 +217,130 @@ function HeroAtmosphere() {
       context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     };
 
+    const drawBundle = ({
+      start,
+      end,
+      wave,
+      frequency,
+      pinch,
+      spread,
+      count,
+      phase,
+      color,
+      alpha,
+      time,
+    }: {
+      start: number;
+      end: number;
+      wave: number;
+      frequency: number;
+      pinch: number;
+      spread: number;
+      count: number;
+      phase: number;
+      color: [number, number, number];
+      alpha: number;
+      time: number;
+    }) => {
+      for (let line = 0; line < count; line += 1) {
+        const offset = line - (count - 1) / 2;
+        context.beginPath();
+
+        for (let sample = 0; sample <= 96; sample += 1) {
+          const progress = sample / 96;
+          const x = (progress * 1.22 - 0.11) * width;
+          const center = height * (start + (end - start) * progress);
+          const waveOffset = Math.sin(progress * frequency + phase + time * 0.34) * height * wave;
+          const pinchFactor = 0.16 + 0.84 * Math.min(1, Math.abs(progress - pinch) * 1.85);
+          const pointerLift = (pointerY - 0.5) * (progress - 0.5) * height * 0.035;
+          const y = center + waveOffset + offset * (spread * height / count) * pinchFactor + pointerLift;
+
+          if (sample === 0) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        }
+
+        const lineAlpha = alpha * (0.78 + (line % 5) * 0.055);
+        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${lineAlpha})`;
+        context.lineWidth = line % 7 === 0 ? 1.15 : 0.8;
+        context.stroke();
+      }
+    };
+
+    const drawContour = (isTop: boolean, color: [number, number, number], time: number) => {
+      context.beginPath();
+      for (let sample = 0; sample <= 100; sample += 1) {
+        const progress = sample / 100;
+        const x = (progress * 1.12 - 0.06) * width;
+        const edgeWave = Math.sin(progress * 7.2 + time * 0.24) * height * 0.035;
+        const secondaryWave = Math.sin(progress * 16 - time * 0.13) * height * 0.012;
+        const base = isTop ? height * 0.12 : height * 0.88;
+        const y = base + (isTop ? edgeWave + secondaryWave : -edgeWave - secondaryWave)
+          + (pointerX - 0.5) * width * 0.018;
+        if (sample === 0) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      }
+      context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.62)`;
+      context.lineWidth = 2.1;
+      context.stroke();
+    };
+
     const draw = (now: number) => {
       if (!width || !height) resize();
 
       const elapsed = (now - startedAt) / 1000;
       const motionScale = prefersReducedMotion ? 0 : 1;
+      const time = elapsed * motionScale;
       pointerX += (targetPointerX - pointerX) * 0.04;
       pointerY += (targetPointerY - pointerY) * 0.04;
       context.clearRect(0, 0, width, height);
 
       const isDark = document.documentElement.dataset.theme === 'dark';
-      const palette = isDark
-        ? [[181, 227, 244], [143, 198, 223], [84, 137, 160]]
-        : [[57, 114, 143], [107, 159, 186], [151, 188, 204]];
+      const lineColor: [number, number, number] = isDark ? [184, 211, 221] : [115, 137, 149];
+      const softColor: [number, number, number] = isDark ? [111, 164, 183] : [157, 177, 187];
+      const contourColor: [number, number, number] = isDark ? [143, 198, 223] : [220, 112, 106];
 
-      for (let layer = 0; layer < 9; layer += 1) {
-        const baseY = height * (0.08 + layer * 0.12);
-        const amplitude = 8 + layer * 1.7;
-        const color = palette[layer % palette.length];
-        context.beginPath();
-        for (let x = -24; x <= width + 24; x += 14) {
-          const ratio = x / Math.max(width, 1);
-          const y = baseY
-            + Math.sin(ratio * 7 + layer * 0.72 + elapsed * (0.12 + layer * 0.012) * motionScale) * amplitude
-            + Math.sin(ratio * 17 - layer * 0.5 + elapsed * 0.08 * motionScale) * 3
-            + (pointerY - 0.5) * (layer - 4) * 2.5;
-          if (x === -24) context.moveTo(x, y);
-          else context.lineTo(x, y);
-        }
-        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${0.035 + (layer % 3) * 0.014})`;
-        context.lineWidth = layer % 3 === 0 ? 1 : 0.7;
-        context.stroke();
-      }
+      drawBundle({
+        start: 0.05,
+        end: 0.78,
+        wave: 0.105,
+        frequency: 4.3,
+        pinch: 0.35,
+        spread: 0.46,
+        count: 24,
+        phase: 0.4,
+        color: lineColor,
+        alpha: isDark ? 0.13 : 0.17,
+        time,
+      });
+      drawBundle({
+        start: 0.84,
+        end: 0.26,
+        wave: 0.09,
+        frequency: 4.9,
+        pinch: 0.62,
+        spread: 0.34,
+        count: 19,
+        phase: 2.2,
+        color: softColor,
+        alpha: isDark ? 0.12 : 0.15,
+        time: time * 0.82,
+      });
+      drawBundle({
+        start: 0.46,
+        end: 0.58,
+        wave: 0.055,
+        frequency: 6.2,
+        pinch: 0.47,
+        spread: 0.2,
+        count: 13,
+        phase: 4.1,
+        color: lineColor,
+        alpha: isDark ? 0.08 : 0.1,
+        time: time * 0.65,
+      });
 
-      for (let trail = 0; trail < 4; trail += 1) {
-        const color = palette[(trail + 1) % palette.length];
-        context.beginPath();
-        for (let x = -40; x <= width + 40; x += 18) {
-          const ratio = x / Math.max(width, 1);
-          const y = height * (0.2 + trail * 0.2)
-            + Math.sin(ratio * 4 + trail + elapsed * 0.06 * motionScale) * (18 + trail * 3)
-            + Math.cos(ratio * 9 - elapsed * 0.04 * motionScale) * 5;
-          if (x === -40) context.moveTo(x, y);
-          else context.lineTo(x, y);
-        }
-        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.055)`;
-        context.lineWidth = 1.1;
-        context.stroke();
-      }
-
-      for (let index = 0; index < 26; index += 1) {
-        const progress = (index * 0.173 + elapsed * (0.008 + (index % 4) * 0.001) * motionScale) % 1;
-        const x = progress * (width + 120) - 60;
-        const y = height * (0.12 + ((index * 0.367) % 0.76))
-          + Math.sin(elapsed * 0.15 * motionScale + index) * 12
-          + (pointerX - 0.5) * (index % 5 - 2) * 4;
-        const length = 8 + (index % 4) * 4;
-        const color = palette[(index + 2) % palette.length];
-        context.beginPath();
-        context.moveTo(x, y);
-        context.lineTo(x + length, y - 1.5);
-        context.strokeStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${0.07 + (index % 3) * 0.018})`;
-        context.lineWidth = 0.8;
-        context.stroke();
-      }
+      drawContour(true, contourColor, time);
+      drawContour(false, contourColor, time * 0.86);
     };
 
     const render = (now: number) => {
