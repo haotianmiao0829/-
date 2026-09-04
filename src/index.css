@@ -1633,25 +1633,25 @@ textarea:focus-visible {
 
 .site-footer {
   width: min(var(--max-width), calc(100% - 48px));
-  min-height: 118px;
+  min-height: 88px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .site-footer > div {
   display: grid;
-  gap: 5px;
+  gap: 3px;
 }
 
 .site-footer strong {
   color: var(--ink);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -2078,8 +2078,8 @@ textarea:focus-visible {
 
   .site-footer {
     grid-template-columns: 1fr;
-    gap: 18px;
-    padding: 28px 0 100px;
+    gap: 12px;
+    padding: 18px 0 92px;
   }
 
   .site-footer > span {
