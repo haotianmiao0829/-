@@ -605,6 +605,7 @@ function HomeView({
   onNavigate: (page: Page) => void;
   onOpenProjects: (category?: string) => void;
 }) {
+  const prefersReducedMotion = useReducedMotion();
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
@@ -659,17 +660,39 @@ function HomeView({
       </section>
 
       <section className="home-lower-grid section-block">
-        <Reveal className="home-feature-panel">
-          <div className="panel-label">A NOTE TO MYSELF</div>
-          <h2>先把每一次尝试做好，答案会在路上出现。</h2>
-          <p>这里记录作品，也记录一个人如何在设计、产品、影像和生活之间不断换气。</p>
-          <button type="button" className="text-link" onClick={() => onNavigate('about')} data-cursor="interactive">阅读我的经历 <ArrowUpRight size={16} /></button>
+        <Reveal className="home-panel-reveal">
+          <motion.button
+            type="button"
+            className="home-feature-panel home-action-panel"
+            onClick={() => onNavigate('about')}
+            whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+            whileTap={prefersReducedMotion ? undefined : { y: 1, scale: 0.985 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+            data-cursor="interactive"
+            aria-label="阅读我的经历"
+          >
+            <div className="panel-label">A NOTE TO MYSELF</div>
+            <h2>先把每一次尝试做好，答案会在路上出现。</h2>
+            <p>这里记录作品，也记录一个人如何在设计、产品、影像和生活之间不断换气。</p>
+            <span className="text-link">阅读我的经历 <ArrowUpRight size={16} /></span>
+          </motion.button>
         </Reveal>
-        <Reveal className="home-article-panel" delay={0.08}>
-          <div className="panel-label">LATEST ARTICLE / 最近文章</div>
-          <h3>{ARTICLES[0]?.title}</h3>
-          <p>{ARTICLES[0]?.excerpt}</p>
-          <button type="button" className="text-link" onClick={() => onNavigate('articles')} data-cursor="interactive">进入文章 <ArrowRight size={16} /></button>
+        <Reveal className="home-panel-reveal" delay={0.08}>
+          <motion.button
+            type="button"
+            className="home-article-panel home-action-panel"
+            onClick={() => onNavigate('articles')}
+            whileHover={prefersReducedMotion ? undefined : { y: -3 }}
+            whileTap={prefersReducedMotion ? undefined : { y: 1, scale: 0.985 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+            data-cursor="interactive"
+            aria-label="进入最近文章"
+          >
+            <div className="panel-label">LATEST ARTICLE / 最近文章</div>
+            <h3>{ARTICLES[0]?.title}</h3>
+            <p>{ARTICLES[0]?.excerpt}</p>
+            <span className="text-link">进入文章 <ArrowRight size={16} /></span>
+          </motion.button>
         </Reveal>
       </section>
 
