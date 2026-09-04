@@ -171,6 +171,10 @@ textarea:focus-visible {
   padding: 92px 0 36px;
 }
 
+.site-main-home {
+  padding-bottom: 0;
+}
+
 .site-header {
   position: fixed;
   z-index: 40;
@@ -815,7 +819,13 @@ textarea:focus-visible {
 }
 
 .closing-band {
-  padding: 150px 0 116px;
+  width: 100vw;
+  min-height: 100svh;
+  margin-inline: calc(50% - 50vw);
+  display: grid;
+  place-items: center;
+  padding: clamp(48px, 8vh, 96px) 24px;
+  background: var(--bg);
   text-align: center;
 }
 
@@ -2020,7 +2030,8 @@ textarea:focus-visible {
   }
 
   .closing-band {
-    padding: 110px 0 82px;
+    min-height: 72svh;
+    padding: 64px 16px;
   }
 
   .page-view {
