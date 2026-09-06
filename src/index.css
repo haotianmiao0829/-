@@ -1107,11 +1107,22 @@ textarea:focus-visible {
   white-space: nowrap;
 }
 
+.page-view.about-view {
+  margin-top: -16px;
+  padding-top: 0;
+}
+
 .about-hero-screen {
   min-height: calc(100svh - 76px);
   display: grid;
   align-content: center;
   padding: clamp(24px, 7vh, 72px) 0;
+}
+
+.about-hero-heading,
+.about-intro {
+  width: min(100%, 760px);
+  margin-inline: auto;
 }
 
 .about-hero-screen .section-heading {
@@ -1120,7 +1131,7 @@ textarea:focus-visible {
 
 .about-intro {
   max-width: 760px;
-  margin: clamp(40px, 8vh, 88px) 0 0;
+  margin-top: clamp(40px, 8vh, 88px);
   padding-left: clamp(0px, 6vw, 84px);
 }
 

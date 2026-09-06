@@ -804,7 +804,7 @@ function AboutView() {
   return (
     <div className="page-view about-view">
       <section className="about-hero-screen" aria-label="关于我">
-        <Reveal>
+        <Reveal className="about-hero-heading">
           <SectionHeading eyebrow="ABOUT / 关于我" title="慢慢成为自己" description="产品、内容、影像，都是我理解世界和表达自己的方式。" />
         </Reveal>
 
