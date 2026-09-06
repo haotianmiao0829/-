@@ -41,7 +41,7 @@ type ThemeMode = 'auto' | 'light' | 'dark';
 type ResolvedTheme = 'light' | 'dark';
 
 const BEIJING_TIME_ZONE = 'Asia/Shanghai';
-const PORTRAIT_SRC = '/files/055bb64ff9f971595a2e8fb379274da0.jpg';
+const PORTRAIT_SRC = '/files/haotianmiao-portrait.jpg';
 const GITHUB_URL = 'https://github.com/haotianmiao0829/-';
 
 const getBeijingHour = () => {
