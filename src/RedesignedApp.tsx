@@ -819,7 +819,7 @@ function AboutView() {
           <div className="profile-copy">
             <div className="panel-label">PROFILE / 个人信息</div>
             <h3>你好，我是浩天淼。</h3>
-            <p>数字媒体艺术专业在读，正在寻找产品、内容、设计和 AI 之间更自然的连接。</p>
+            <p>具备扎实的视觉审美，能够从专业视角理解AI模型对高质量视觉内容的需求。正在深入学习世界模型、物理世界数据等前沿方向，致力于成为懂产品、能管理、有审美的AI数据复合型人才。</p>
             <div className="profile-details">
               <span>常驻 / 重庆 · 北京</span>
               <span>邮箱 / 2587944602@qq.com</span>
