@@ -780,6 +780,12 @@ const INTERNSHIPS = [
     period: '2025.11 — 2025.12',
     description: '参与 AI 图形训练项目，建立数据处理流程与监控机制，持续提升模型识别准确率。',
   },
+  {
+    company: '上海图虫网络科技有限公司',
+    role: 'AI 数据运营',
+    period: '2026.04 — 2026.09',
+    description: '负责 AI 数据运营相关工作。',
+  },
 ];
 
 const SKILL_GROUPS = [
