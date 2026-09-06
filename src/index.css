@@ -1107,9 +1107,20 @@ textarea:focus-visible {
   white-space: nowrap;
 }
 
+.about-hero-screen {
+  min-height: calc(100svh - 76px);
+  display: grid;
+  align-content: center;
+  padding: clamp(24px, 7vh, 72px) 0;
+}
+
+.about-hero-screen .section-heading {
+  margin-bottom: 0;
+}
+
 .about-intro {
   max-width: 760px;
-  margin: 2px 0 56px;
+  margin: clamp(40px, 8vh, 88px) 0 0;
   padding-left: clamp(0px, 6vw, 84px);
 }
 
@@ -1175,6 +1186,10 @@ textarea:focus-visible {
   overflow: hidden;
   border: 1px solid var(--line);
   background: var(--surface-soft);
+}
+
+.about-profile-section {
+  padding-top: clamp(48px, 8vh, 96px);
 }
 
 .profile-image {
@@ -2084,6 +2099,23 @@ textarea:focus-visible {
   .page-view {
     padding-top: 34px;
     padding-bottom: 72px;
+  }
+
+  .about-hero-screen {
+    min-height: calc(100svh - 66px);
+    padding: 24px 0 40px;
+  }
+
+  .about-hero-screen .section-heading {
+    margin-bottom: 0;
+  }
+
+  .about-intro {
+    margin-top: 42px;
+  }
+
+  .about-profile-section {
+    padding-top: 48px;
   }
 
   .timeline-item {

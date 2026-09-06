@@ -803,33 +803,37 @@ function AboutView() {
 
   return (
     <div className="page-view about-view">
-      <Reveal>
-        <SectionHeading eyebrow="ABOUT / 关于我" title="慢慢成为自己" description="产品、内容、影像，都是我理解世界和表达自己的方式。" />
-      </Reveal>
+      <section className="about-hero-screen" aria-label="关于我">
+        <Reveal>
+          <SectionHeading eyebrow="ABOUT / 关于我" title="慢慢成为自己" description="产品、内容、影像，都是我理解世界和表达自己的方式。" />
+        </Reveal>
 
-      <Reveal className="about-intro">
-        <p>我想做有思考的设计，也想做有温度的产品。比起给自己贴一个固定的标签，我更愿意保持好奇，在不同的工作和生活里持续试错、持续成长。</p>
-        <span>浩天淼 / CREATIVE PRACTITIONER</span>
-      </Reveal>
+        <Reveal className="about-intro">
+          <p>我想做有思考的设计，也想做有温度的产品。比起给自己贴一个固定的标签，我更愿意保持好奇，在不同的工作和生活里持续试错、持续成长。</p>
+          <span>浩天淼 / CREATIVE PRACTITIONER</span>
+        </Reveal>
+      </section>
 
-      <Reveal className="profile-panel">
-        <div className="profile-copy">
-          <div className="panel-label">PROFILE / 个人信息</div>
-          <h3>你好，我是浩天淼。</h3>
-          <p>数字媒体艺术专业在读，正在寻找产品、内容、设计和 AI 之间更自然的连接。</p>
-          <div className="profile-details">
-            <span>常驻 / 重庆 · 北京</span>
-            <span>邮箱 / 2587944602@qq.com</span>
-            <span>微信 / Z18132013791</span>
+      <section className="about-profile-section" aria-label="个人信息">
+        <Reveal className="profile-panel">
+          <div className="profile-copy">
+            <div className="panel-label">PROFILE / 个人信息</div>
+            <h3>你好，我是浩天淼。</h3>
+            <p>数字媒体艺术专业在读，正在寻找产品、内容、设计和 AI 之间更自然的连接。</p>
+            <div className="profile-details">
+              <span>常驻 / 重庆 · 北京</span>
+              <span>邮箱 / 2587944602@qq.com</span>
+              <span>微信 / Z18132013791</span>
+            </div>
+            <button type="button" className="button button-quiet" onClick={copyWechat} data-cursor="interactive">
+              {copied ? <Check size={16} /> : <Mail size={16} />} {copied ? '微信号已复制' : '复制微信号'}
+            </button>
           </div>
-          <button type="button" className="button button-quiet" onClick={copyWechat} data-cursor="interactive">
-            {copied ? <Check size={16} /> : <Mail size={16} />} {copied ? '微信号已复制' : '复制微信号'}
-          </button>
-        </div>
-        <div className="profile-image-wrap">
-          <img src={PORTRAIT_SRC} alt="浩天淼头像" className="profile-image" />
-        </div>
-      </Reveal>
+          <div className="profile-image-wrap">
+            <img src={PORTRAIT_SRC} alt="浩天淼头像" className="profile-image" />
+          </div>
+        </Reveal>
+      </section>
 
       <section className="about-section">
         <Reveal><SectionHeading eyebrow="EXPERIENCE / 经历" title="走过的路" /></Reveal>
