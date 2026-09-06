@@ -1127,7 +1127,7 @@ textarea:focus-visible {
 .about-intro {
   max-width: 760px;
   margin-top: clamp(40px, 8vh, 88px);
-  padding-left: clamp(0px, 6vw, 84px);
+  text-align: center;
 }
 
 .about-intro p {
