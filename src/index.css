@@ -792,14 +792,13 @@ textarea:focus-visible {
 }
 
 .home-feature-panel {
-  color: #fff;
-  background: var(--accent-strong);
+  color: var(--ink);
+  background: var(--accent-soft);
 }
 
 .home-feature-panel .panel-label,
-.home-feature-panel p,
 .home-feature-panel .text-link {
-  color: rgba(255, 255, 255, 0.76);
+  color: var(--accent-strong);
 }
 
 .home-feature-panel h2,
@@ -827,7 +826,7 @@ textarea:focus-visible {
 }
 
 .home-feature-panel p {
-  color: rgba(255, 255, 255, 0.76);
+  color: var(--muted-strong);
 }
 
 :root[data-theme="dark"] .home-feature-panel {
@@ -876,7 +875,7 @@ textarea:focus-visible {
 
 .home-feature-panel .text-link:hover,
 .home-feature-panel.home-action-panel:hover .text-link {
-  color: #fff;
+  color: var(--ink);
 }
 
 .closing-band {
