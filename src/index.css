@@ -830,6 +830,22 @@ textarea:focus-visible {
   color: rgba(255, 255, 255, 0.76);
 }
 
+:root[data-theme="dark"] .home-feature-panel {
+  color: var(--ink);
+  border-color: rgba(214, 236, 244, 0.18);
+  background: #162b35;
+}
+
+:root[data-theme="dark"] .home-feature-panel .panel-label,
+:root[data-theme="dark"] .home-feature-panel p,
+:root[data-theme="dark"] .home-feature-panel .text-link {
+  color: rgba(237, 245, 248, 0.72);
+}
+
+:root[data-theme="dark"] .home-feature-panel.home-action-panel:hover .text-link {
+  color: var(--ink);
+}
+
 .panel-label {
   color: var(--accent-strong);
   font-size: 9px;
