@@ -42,6 +42,10 @@ export interface Project {
   year: string;
   description?: string;
   category?: string;
+  posterSrc?: string;
+  videoSrc?: string;
+  pdfSrc?: string;
+  gallery?: Array<{ src: string; alt: string }>;
 }
 
 export interface Article {
@@ -93,27 +97,33 @@ export const PROJECTS: Project[] = [
     tags: ['AI', 'Emotion Design', 'Creative Coding'],
     link: '#',
     year: '2025',
-    category: '交互设计'
+    category: '交互设计',
+    posterSrc: '/media/emotion-garden-cover.png',
+    pdfSrc: '/files/情绪花园.pdf'
   },
   {
-    id: 'ux-2',
-    title: '未完待续',
-    description: '更多精彩即将呈现',
-    tags: ['Coming Soon', 'WIP'],
+    id: 'portfolio-2025',
+    title: '2025作品集',
+    description: '2025 年个人设计作品合集',
+    tags: ['Portfolio', 'Visual Design', '2025'],
     link: '#',
-    year: '2024',
-    category: '交互设计'
+    year: '2025',
+    category: '交互设计',
+    posterSrc: '/media/2025-portfolio-cover.png',
+    pdfSrc: '/files/2025-portfolio.pdf'
   },
   
   // 视频集 - 作品
   {
     id: 'video-1',
-    title: '创意短片',
+    title: '呐喊',
     description: '实验性视觉艺术作品',
     tags: ['Video Art', 'Experimental', 'After Effects'],
     link: '#',
     year: '2023',
-    category: '视频集'
+    category: '视频集',
+    posterSrc: '/media/the-shout-poster.jpg',
+    videoSrc: '/media/the-shout.mp4'
   },
   {
     id: 'video-2',
@@ -133,7 +143,26 @@ export const PROJECTS: Project[] = [
     tags: ['Portrait', 'People', 'Photography'],
     link: '#',
     year: '2023',
-    category: '摄影集'
+    category: '摄影集',
+    posterSrc: '/media/portrait-wuxia-11.jpg',
+    gallery: [
+      {
+        src: '/media/portrait-wuxia-11.jpg',
+        alt: '暖色户外人物肖像'
+      },
+      {
+        src: '/media/portrait-12-26-9.jpg',
+        alt: '蓝调窗边人物侧面肖像'
+      },
+      {
+        src: '/media/portrait-12-26-12.jpg',
+        alt: '窗边自然光人物侧面肖像'
+      },
+      {
+        src: '/media/portrait-wuxia-5.jpg',
+        alt: '林间自然光人物肖像'
+      }
+    ]
   },
   {
     id: 'photo-2',

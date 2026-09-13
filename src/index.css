@@ -172,6 +172,7 @@ textarea:focus-visible {
 }
 
 .site-main-home {
+  width: 100%;
   padding-bottom: 0;
 }
 
@@ -359,7 +360,7 @@ textarea:focus-visible {
 .hero-intro {
   position: relative;
   z-index: 1;
-  width: 100%;
+  width: min(var(--max-width), calc(100% - 48px));
 }
 
 .hero-kicker,
@@ -484,9 +485,10 @@ textarea:focus-visible {
 
 .hero-footerline {
   position: absolute;
-  right: 0;
+  right: auto;
   bottom: 0;
-  left: 0;
+  left: 50%;
+  width: min(var(--max-width), calc(100% - 48px));
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -495,6 +497,7 @@ textarea:focus-visible {
   border-top: 1px solid color-mix(in srgb, var(--line) 58%, transparent);
   color: var(--muted);
   font-size: 9px;
+  transform: translateX(-50%);
 }
 
 .hero-footerline span:last-child {
@@ -552,6 +555,11 @@ textarea:focus-visible {
 
 .section-block {
   padding: 136px 0 0;
+}
+
+.home-view > .section-block {
+  width: min(var(--max-width), calc(100% - 48px));
+  margin-inline: auto;
 }
 
 .section-heading {
@@ -642,6 +650,44 @@ textarea:focus-visible {
   height: 142px;
   overflow: hidden;
   opacity: 0.9;
+}
+
+.category-art.has-cover {
+  background: #0b1318;
+  opacity: 1;
+}
+
+.category-cover {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-art.has-cover::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  background: linear-gradient(180deg, rgb(5 12 16 / 32%), transparent 65%, rgb(5 12 16 / 20%));
+  opacity: 1;
+  transform: none;
+}
+
+.category-art.has-cover::before,
+.category-art.has-cover span::before,
+.category-art.has-cover span::after,
+.category-art.is-empty::before,
+.category-art.is-empty::after,
+.category-art.is-empty span::before,
+.category-art.is-empty span::after {
+  display: none;
 }
 
 .category-art::before,
@@ -1032,6 +1078,25 @@ textarea:focus-visible {
   transform: rotate(9deg);
 }
 
+.project-art-has-poster::before,
+.project-art-has-poster::after {
+  display: none;
+}
+
+.project-art-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-art-has-poster .project-art-label,
+.project-art-has-poster .project-art-arrow {
+  color: #fff;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 72%);
+}
+
 .project-art-emotion-garden { background: #dbeaf1; color: #4e8aa5; }
 .project-art-video-1 { background: #e5e8ef; color: #657899; }
 .project-art-video-2 { background: #e2ece7; color: #5a8978; }
@@ -1129,10 +1194,8 @@ textarea:focus-visible {
   padding: 0;
 }
 
-.about-hero-heading,
-.about-intro {
-  width: min(100%, 760px);
-  margin-inline: auto;
+.about-hero-heading {
+  width: 100%;
 }
 
 .about-hero-screen .section-heading {
@@ -1140,21 +1203,27 @@ textarea:focus-visible {
 }
 
 .about-intro {
-  max-width: 760px;
+  width: min(100%, 900px);
+  margin-inline: auto;
+  max-width: 900px;
   margin-top: clamp(40px, 8vh, 88px);
   text-align: center;
 }
 
-.about-intro p {
+.about-intro-copy {
   margin: 0;
   color: var(--muted-strong);
-  font-size: clamp(16px, 1.8vw, 22px);
+  font-size: clamp(15px, 1.45vw, 18px);
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   line-height: 1.75;
 }
 
-.about-intro span {
+.about-intro-copy > span {
+  display: block;
+}
+
+.about-intro-byline {
   display: block;
   margin-top: 22px;
   color: var(--accent-strong);
@@ -1369,6 +1438,119 @@ textarea:focus-visible {
   min-height: min(62vh, 610px);
 }
 
+.project-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2538 / 1080;
+  border: 0;
+  background: #050708;
+  object-fit: contain;
+}
+
+.project-video:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: -3px;
+}
+
+.project-gallery {
+  background: #050708;
+}
+
+.project-gallery-stage {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.project-gallery-item {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  background: #050708;
+}
+
+.project-gallery-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.project-gallery-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.project-gallery-nav,
+.image-modal-nav {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  border-radius: 4px;
+  color: #fff;
+  background: rgba(7, 15, 20, 0.68);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transform: translateY(-50%);
+  backdrop-filter: blur(10px);
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.project-gallery-nav:hover,
+.image-modal-nav:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  background: rgba(7, 15, 20, 0.88);
+}
+
+.project-gallery-nav:focus-visible,
+.image-modal-nav:focus-visible,
+.modal-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.project-gallery-nav-previous {
+  left: 16px;
+}
+
+.project-gallery-nav-next {
+  right: 16px;
+}
+
+.project-gallery-counter,
+.image-modal-counter {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 14px;
+  min-width: 58px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 3px;
+  color: #fff;
+  background: rgba(7, 15, 20, 0.68);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  line-height: 1;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
 .pdf-preview {
   position: relative;
   display: block;
@@ -1385,6 +1567,14 @@ textarea:focus-visible {
   height: min(62vh, 610px);
   border: 0;
   pointer-events: none;
+}
+
+.pdf-preview-cover {
+  display: block;
+  width: 100%;
+  height: min(62vh, 610px);
+  background: #050708;
+  object-fit: contain;
 }
 
 .pdf-preview > span {
@@ -1441,6 +1631,41 @@ textarea:focus-visible {
   height: 90vh;
   border: 0;
   background: #fff;
+}
+
+.image-modal {
+  position: fixed;
+  z-index: 90;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 72px;
+  background: rgba(7, 15, 20, 0.9);
+}
+
+.image-modal-content {
+  display: block;
+  max-width: calc(100vw - 144px);
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.image-modal-nav-previous {
+  left: 18px;
+}
+
+.image-modal-nav-next {
+  right: 18px;
+}
+
+.image-modal-counter {
+  right: auto;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .modal-close {
@@ -1960,6 +2185,10 @@ textarea:focus-visible {
     padding-top: 82px;
   }
 
+  .site-main.site-main-home {
+    width: 100%;
+  }
+
   .site-header-inner {
     height: 66px;
   }
@@ -2037,6 +2266,11 @@ textarea:focus-visible {
     padding: 48px 0 32px;
   }
 
+  .hero-intro,
+  .hero-footerline {
+    width: calc(100% - 32px);
+  }
+
   .hero-kicker {
     font-size: 10px;
   }
@@ -2060,10 +2294,12 @@ textarea:focus-visible {
 
   .hero-footerline {
     position: absolute;
-    right: 0;
+    right: 16px;
     bottom: 0;
-    left: 0;
+    left: 16px;
+    width: auto;
     grid-template-columns: 1fr auto;
+    transform: none;
   }
 
   .hero-footerline span:last-child {
@@ -2089,6 +2325,10 @@ textarea:focus-visible {
 
   .section-block {
     padding-top: 94px;
+  }
+
+  .home-view > .section-block {
+    width: min(100% - 32px, var(--max-width));
   }
 
   .section-heading {
@@ -2120,6 +2360,57 @@ textarea:focus-visible {
   .page-view {
     padding-top: 34px;
     padding-bottom: 72px;
+  }
+
+  .project-gallery-nav {
+    width: 38px;
+    height: 38px;
+  }
+
+  .project-gallery-nav-previous {
+    left: 8px;
+  }
+
+  .project-gallery-nav-next {
+    right: 8px;
+  }
+
+  .project-gallery-counter {
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .image-modal {
+    padding: 58px 12px 72px;
+  }
+
+  .image-modal-content {
+    max-width: 100%;
+    max-height: calc(100svh - 130px);
+  }
+
+  .image-modal-nav {
+    top: auto;
+    bottom: 14px;
+    width: 42px;
+    height: 42px;
+    transform: none;
+  }
+
+  .image-modal-nav-previous {
+    left: calc(50% - 52px);
+  }
+
+  .image-modal-nav-next {
+    right: calc(50% - 52px);
+  }
+
+  .image-modal-counter {
+    top: 20px;
+    right: auto;
+    bottom: auto;
+    left: 16px;
+    transform: none;
   }
 
   .about-hero-screen {

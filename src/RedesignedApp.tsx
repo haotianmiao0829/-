@@ -11,6 +11,8 @@ import {
   BookOpen,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock3,
   Code2,
   ExternalLink,
@@ -536,6 +538,7 @@ function CategoryCard({
   onClick: () => void;
 }) {
   const count = PROJECTS.filter((project) => project.category === category.name).length;
+  const coverProject = PROJECTS.find((project) => project.category === category.name && project.posterSrc);
   return (
     <motion.button
       type="button"
@@ -547,8 +550,15 @@ function CategoryCard({
     >
       <span className="category-index">0{index + 1}</span>
       <span className="category-year">{category.year}</span>
-      <span className="category-art" aria-hidden="true">
-        <span />
+      <span className={`category-art ${coverProject ? 'has-cover' : 'is-empty'}`} aria-hidden="true">
+        {coverProject && (
+          <img
+            className="category-cover"
+            src={coverProject.posterSrc}
+            alt=""
+            loading="lazy"
+          />
+        )}
       </span>
       <span className="category-name">{category.name}</span>
       <span className="category-description">{category.description}</span>
@@ -564,9 +574,18 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: () => void
   const isExternal = project.link !== '#';
   const content = (
     <>
-      <div className={`project-art project-art-${project.id}`}>
+      <div className={`project-art project-art-${project.id}${project.posterSrc ? ' project-art-has-poster' : ''}`}>
+        {project.posterSrc && (
+          <img
+            className="project-art-poster"
+            src={project.posterSrc}
+            alt=""
+            loading="lazy"
+            aria-hidden="true"
+          />
+        )}
         <span className="project-art-label">{project.category}</span>
-        <span className="project-art-title">{project.title}</span>
+        {!project.posterSrc && <span className="project-art-title">{project.title}</span>}
         <ArrowUpRight className="project-art-arrow" size={22} strokeWidth={1.5} />
       </div>
       <div className="project-card-body">
@@ -815,8 +834,11 @@ function AboutView() {
         </Reveal>
 
         <Reveal className="about-intro">
-          <p>我想做有思考的设计，也想做有温度的产品。比起给自己贴一个固定的标签，我更愿意保持好奇，在不同的工作和生活里持续试错、持续成长。</p>
-          <span>浩天淼 / CREATIVE PRACTITIONER</span>
+          <p className="about-intro-copy">
+            <span>我想做有思考的设计，也想做有温度的产品。</span>
+            <span>比起给自己贴一个固定的标签，我更愿意保持好奇，在不同的工作和生活里持续试错、持续成长。</span>
+          </p>
+          <span className="about-intro-byline">浩天淼 / CREATIVE PRACTITIONER</span>
         </Reveal>
       </section>
 
@@ -874,7 +896,45 @@ function AboutView() {
 
 function ProjectDetailView({ project, onBack }: { project: Project; onBack: () => void }) {
   const [pdfOpen, setPdfOpen] = useState(false);
-  const isEmotionGarden = project.title === '情绪花园';
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [imageOpen, setImageOpen] = useState(false);
+  const pdfUrl = project.pdfSrc ? `${project.pdfSrc}#toolbar=0&navpanes=0&scrollbar=0` : '';
+  const gallery = project.gallery ?? [];
+  const activeGalleryImage = gallery[galleryIndex];
+
+  const showPreviousImage = useCallback(() => {
+    if (gallery.length < 2) return;
+    setGalleryIndex((index) => (index - 1 + gallery.length) % gallery.length);
+  }, [gallery.length]);
+
+  const showNextImage = useCallback(() => {
+    if (gallery.length < 2) return;
+    setGalleryIndex((index) => (index + 1) % gallery.length);
+  }, [gallery.length]);
+
+  useEffect(() => {
+    setGalleryIndex(0);
+    setImageOpen(false);
+  }, [project.id]);
+
+  useEffect(() => {
+    if (!imageOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setImageOpen(false);
+      if (event.key === 'ArrowLeft') showPreviousImage();
+      if (event.key === 'ArrowRight') showNextImage();
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [imageOpen, showNextImage, showPreviousImage]);
 
   return (
     <div className="page-view detail-view">
@@ -888,11 +948,84 @@ function ProjectDetailView({ project, onBack }: { project: Project; onBack: () =
         </div>
       </Reveal>
       <Reveal className="detail-media" delay={0.08}>
-        {isEmotionGarden ? (
+        {project.videoSrc ? (
+          <video
+            className="project-video"
+            controls
+            playsInline
+            preload="metadata"
+            poster={project.posterSrc}
+            aria-label={`${project.title}视频`}
+          >
+            <source src={project.videoSrc} type="video/mp4" />
+            您的浏览器暂不支持视频播放。
+          </video>
+        ) : project.pdfSrc ? (
           <button type="button" className="pdf-preview" onClick={() => setPdfOpen(true)} data-cursor="interactive">
-            <iframe src="/files/情绪花园.pdf#toolbar=0&navpanes=0&scrollbar=0" title="情绪花园项目预览" />
+            {project.posterSrc ? (
+              <img className="pdf-preview-cover" src={project.posterSrc} alt={`${project.title}封面`} />
+            ) : (
+              <iframe src={pdfUrl} title={`${project.title}项目预览`} />
+            )}
             <span>点击放大查看 PDF <ArrowUpRight size={16} /></span>
           </button>
+        ) : gallery.length > 0 && activeGalleryImage ? (
+          <div className="project-gallery" aria-label={`${project.title}作品图片`}>
+            <div className="project-gallery-stage">
+              <AnimatePresence initial={false} mode="wait">
+                <motion.figure
+                  className="project-gallery-item"
+                  key={activeGalleryImage.src}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <button
+                    type="button"
+                    className="project-gallery-button"
+                    onClick={() => setImageOpen(true)}
+                    aria-label={`放大查看${activeGalleryImage.alt}`}
+                    data-cursor="interactive"
+                  >
+                    <img
+                      className="project-gallery-image"
+                      src={activeGalleryImage.src}
+                      alt={activeGalleryImage.alt}
+                      decoding="async"
+                    />
+                  </button>
+                </motion.figure>
+              </AnimatePresence>
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    className="project-gallery-nav project-gallery-nav-previous"
+                    onClick={showPreviousImage}
+                    aria-label="上一张照片"
+                    title="上一张"
+                    data-cursor="interactive"
+                  >
+                    <ChevronLeft size={22} />
+                  </button>
+                  <button
+                    type="button"
+                    className="project-gallery-nav project-gallery-nav-next"
+                    onClick={showNextImage}
+                    aria-label="下一张照片"
+                    title="下一张"
+                    data-cursor="interactive"
+                  >
+                    <ChevronRight size={22} />
+                  </button>
+                  <span className="project-gallery-counter" aria-live="polite">
+                    {String(galleryIndex + 1).padStart(2, '0')} / {String(gallery.length).padStart(2, '0')}
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
         ) : (
           <div className={`project-art project-art-large project-art-${project.id}`}>
             <span className="project-art-label">{project.category}</span>
@@ -907,10 +1040,61 @@ function ProjectDetailView({ project, onBack }: { project: Project; onBack: () =
         </div>
         <p>{project.description} 这是一个持续迭代中的记录，后续会补充更多过程、判断和结果。</p>
       </Reveal>
-      {pdfOpen && isEmotionGarden && (
-        <div className="pdf-modal" role="dialog" aria-modal="true" aria-label="情绪花园 PDF" onClick={() => setPdfOpen(false)}>
+      {pdfOpen && project.pdfSrc && (
+        <div className="pdf-modal" role="dialog" aria-modal="true" aria-label={`${project.title} PDF`} onClick={() => setPdfOpen(false)}>
           <button type="button" className="modal-close" onClick={() => setPdfOpen(false)} aria-label="关闭 PDF" data-cursor="interactive"><X size={24} /></button>
-          <iframe src="/files/情绪花园.pdf#toolbar=0&navpanes=0&scrollbar=0" title="情绪花园 PDF" onClick={(event) => event.stopPropagation()} />
+          <iframe src={pdfUrl} title={`${project.title} PDF`} onClick={(event) => event.stopPropagation()} />
+        </div>
+      )}
+      {imageOpen && activeGalleryImage && (
+        <div className="image-modal" role="dialog" aria-modal="true" aria-label={`${project.title}大图`} onClick={() => setImageOpen(false)}>
+          <button type="button" className="modal-close" onClick={() => setImageOpen(false)} aria-label="关闭大图" title="关闭" data-cursor="interactive"><X size={24} /></button>
+          <AnimatePresence initial={false} mode="wait">
+            <motion.img
+              key={activeGalleryImage.src}
+              className="image-modal-content"
+              src={activeGalleryImage.src}
+              alt={activeGalleryImage.alt}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              onClick={(event) => event.stopPropagation()}
+            />
+          </AnimatePresence>
+          {gallery.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="image-modal-nav image-modal-nav-previous"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showPreviousImage();
+                }}
+                aria-label="上一张照片"
+                title="上一张"
+                data-cursor="interactive"
+              >
+                <ChevronLeft size={26} />
+              </button>
+              <button
+                type="button"
+                className="image-modal-nav image-modal-nav-next"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showNextImage();
+                }}
+                aria-label="下一张照片"
+                title="下一张"
+                data-cursor="interactive"
+              >
+                <ChevronRight size={26} />
+              </button>
+              <span className="image-modal-counter" aria-live="polite">
+                {String(galleryIndex + 1).padStart(2, '0')} / {String(gallery.length).padStart(2, '0')}
+              </span>
+            </>
+          )}
         </div>
       )}
     </div>
