@@ -1561,6 +1561,11 @@ textarea:focus-visible {
   cursor: pointer;
 }
 
+.pdf-preview-group {
+  display: grid;
+  gap: 14px;
+}
+
 .pdf-preview iframe {
   display: block;
   width: 100%;
@@ -1590,6 +1595,25 @@ textarea:focus-visible {
   color: var(--ink);
   background: color-mix(in srgb, var(--surface) 86%, transparent);
   font-size: 11px;
+}
+
+.pdf-open-link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 7px;
+  color: var(--accent-strong);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.pdf-open-link:hover {
+  color: var(--ink);
+}
+
+.pdf-open-link:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 4px;
 }
 
 .detail-copy {

@@ -961,14 +961,25 @@ function ProjectDetailView({ project, onBack }: { project: Project; onBack: () =
             您的浏览器暂不支持视频播放。
           </video>
         ) : project.pdfSrc ? (
-          <button type="button" className="pdf-preview" onClick={() => setPdfOpen(true)} data-cursor="interactive">
-            {project.posterSrc ? (
-              <img className="pdf-preview-cover" src={project.posterSrc} alt={`${project.title}封面`} />
-            ) : (
-              <iframe src={pdfUrl} title={`${project.title}项目预览`} />
-            )}
-            <span>点击放大查看 PDF <ArrowUpRight size={16} /></span>
-          </button>
+          <div className="pdf-preview-group">
+            <button type="button" className="pdf-preview" onClick={() => setPdfOpen(true)} data-cursor="interactive">
+              {project.posterSrc ? (
+                <img className="pdf-preview-cover" src={project.posterSrc} alt={`${project.title}封面`} />
+              ) : (
+                <iframe src={pdfUrl} title={`${project.title}项目预览`} />
+              )}
+              <span>点击放大查看 PDF <ArrowUpRight size={16} /></span>
+            </button>
+            <a
+              className="pdf-open-link"
+              href={project.pdfSrc}
+              target="_blank"
+              rel="noreferrer"
+              data-cursor="interactive"
+            >
+              在新页面打开 PDF <ArrowUpRight size={16} />
+            </a>
+          </div>
         ) : gallery.length > 0 && activeGalleryImage ? (
           <div className="project-gallery" aria-label={`${project.title}作品图片`}>
             <div className="project-gallery-stage">
