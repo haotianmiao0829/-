@@ -1206,7 +1206,7 @@ textarea:focus-visible {
   width: min(100%, 900px);
   margin-inline: auto;
   max-width: 900px;
-  margin-top: clamp(40px, 8vh, 88px);
+  margin-top: clamp(72px, 12vh, 132px);
   text-align: center;
 }
 
