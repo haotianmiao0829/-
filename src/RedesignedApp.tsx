@@ -137,56 +137,6 @@ function useScrollDirection() {
   return isHidden;
 }
 
-function CursorFollower() {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    const supportsFinePointer = window.innerWidth > 760 && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    document.documentElement.classList.remove('has-custom-cursor');
-    if (!supportsFinePointer || prefersReducedMotion || !cursorRef.current) return;
-
-    const cursor = cursorRef.current;
-    let targetX = window.innerWidth / 2;
-    let targetY = window.innerHeight / 2;
-    let currentX = targetX;
-    let currentY = targetY;
-    let frame = 0;
-
-    const render = () => {
-      currentX += (targetX - currentX) * 0.18;
-      currentY += (targetY - currentY) * 0.18;
-      cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-      frame = window.requestAnimationFrame(render);
-    };
-
-    const handleMove = (event: PointerEvent) => {
-      targetX = event.clientX;
-      targetY = event.clientY;
-    };
-
-    const handleOver = (event: Event) => {
-      const target = event.target as HTMLElement | null;
-      const interactive = target?.closest('a, button, [data-cursor="interactive"]');
-      cursor.dataset.active = interactive ? 'true' : 'false';
-    };
-
-    document.documentElement.classList.add('has-custom-cursor');
-    window.addEventListener('pointermove', handleMove, { passive: true });
-    document.addEventListener('pointerover', handleOver, true);
-    frame = window.requestAnimationFrame(render);
-
-    return () => {
-      document.documentElement.classList.remove('has-custom-cursor');
-      window.removeEventListener('pointermove', handleMove);
-      document.removeEventListener('pointerover', handleOver, true);
-      window.cancelAnimationFrame(frame);
-    };
-  }, [prefersReducedMotion]);
-
-  return <div ref={cursorRef} className="cursor-follower" aria-hidden="true" />;
-}
-
 function HeroAtmosphere() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -1349,7 +1299,6 @@ export default function RedesignedApp() {
   return (
     <div className={`site-shell theme-${resolvedTheme}`}>
       <AnimatePresence>{splashVisible && <SplashScreen onSkip={dismissSplash} />}</AnimatePresence>
-      <CursorFollower />
       <header className={`site-header ${navHidden ? 'is-hidden' : ''}`}>
         <div className="site-header-inner">
           <button type="button" className="brand-mark" onClick={() => goTo('home')} data-cursor="interactive" aria-label="回到首页">

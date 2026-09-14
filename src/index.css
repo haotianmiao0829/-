@@ -2121,54 +2121,6 @@ textarea:focus-visible {
   text-align: center;
 }
 
-.cursor-follower {
-  position: fixed;
-  z-index: 100;
-  top: -9px;
-  left: -9px;
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--accent-strong);
-  border-radius: 50%;
-  background: transparent;
-  pointer-events: none;
-  mix-blend-mode: difference;
-  transition: width 220ms ease, height 220ms ease, top 220ms ease, left 220ms ease, background-color 220ms ease;
-}
-
-.cursor-follower[data-active="true"] {
-  top: -15px;
-  left: -15px;
-  width: 30px;
-  height: 30px;
-  border-color: transparent;
-  background: var(--accent);
-}
-
-.has-custom-cursor body,
-.has-custom-cursor a,
-.has-custom-cursor button {
-  cursor: none;
-}
-
-.has-custom-cursor input,
-.has-custom-cursor textarea,
-.has-custom-cursor select {
-  cursor: text;
-}
-
-@media (hover: none), (pointer: coarse) {
-  .cursor-follower {
-    display: none;
-  }
-}
-
-@media (max-width: 760px) {
-  .cursor-follower {
-    display: none;
-  }
-}
-
 @media (max-width: 1020px) {
   .hero-manifesto h1 {
     font-size: clamp(15px, 2vw, 19px);
